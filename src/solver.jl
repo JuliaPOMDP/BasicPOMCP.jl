@@ -3,9 +3,9 @@ function action(p::POMCPPlanner, b)
     try
         a = search(p, b, POMCPTree(p.problem, p.solver.tree_queries))
     catch ex
-        a = default_action(policy.solver.default_action, belief, ex)
+        # Note: this might not be type stable, but it shouldn't matter too much here
+        a = convert(action_type(p.problem), default_action(p.solver.default_action, b, ex))
     end
-    # Note: this might not be type stable, but it shouldn't matter too much here
     return a
 end
 
@@ -37,10 +37,7 @@ function search(p::POMCPPlanner, b, t::POMCPTree)
     return t.a_labels[best_node]
 end
 
-function solve(solver::POMCPSolver, pomdp::POMDP)
-    se = convert_estimator(solver.estimate_value, solver, pomdp)
-    return POMCPPlanner(solver, pomdp, se, solver.rng)
-end
+solve(solver::POMCPSolver, pomdp::POMDP) = POMCPPlanner(solver, pomdp)
 
 function simulate(p::POMCPPlanner, s, hnode::POMCPObsNode, steps::Int)
     if steps == 0
@@ -75,13 +72,14 @@ function simulate(p::POMCPPlanner, s, hnode::POMCPObsNode, steps::Int)
     hao = get(t.o_lookup, (ha, o), 0)
     if hao == 0
         hao = insert_obs_node!(t, p.problem, ha, o)
-        R = r + discount(p.problem)*estimate_value(p.solved_estimator,
-                                                    p.problem,
-                                                    sp,
-                                                    POMCPObsNode(t, hao),
-                                                    steps-1)
+        v = estimate_value(p.solved_estimator,
+                           p.problem,
+                           sp,
+                           POMCPObsNode(t, hao),
+                           steps-1)
+        R = r + discount(p.problem)*v
     else
-        R = r + simulate(p, s, POMCPObsNode(t, hao), steps-1)
+        R = r + discount(p.problem)*simulate(p, sp, POMCPObsNode(t, hao), steps-1)
     end
 
     t.total_n[h] += 1

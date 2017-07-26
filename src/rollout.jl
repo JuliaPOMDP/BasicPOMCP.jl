@@ -108,7 +108,7 @@ function extract_belief{O}(::POMDPToolbox.PreviousObservationUpdater{O}, node::P
     if node.node==1 && !isdefined(node.tree.o_labels, node.node)
         Nullable{O}()
     else
-        Nullable{O}(node.o_labels[node.node])
+        Nullable{O}(node.tree.o_labels[node.node])
     end
 end
 

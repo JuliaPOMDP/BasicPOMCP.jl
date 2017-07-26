@@ -24,9 +24,49 @@ export
     NoDecision,
     AllSamplesTerminal,
     ExceptionRethrow,
-    default_action
+    default_action,
+
+    PORollout,
+    FORollout,
+    RolloutEstimator,
+    FOValue
 
 
+"""
+    POMCPSolver(#=keyword arguments=#)
+
+Partially Observable Monte Carlo Planning Solver. Options are set using the keyword arguments below:
+
+    max_depth::Int
+        Rollouts and tree expension will stop when this depth is reached.
+        default: 20
+
+    c::Float64
+        UCB exploration constant - specifies how much the solver should explore.
+        default: 1.0
+
+    tree_queries::Int
+        Number of iterations during each action() call.
+        default: 1000
+
+    estimate_value::Any (rollout policy can be specified by setting this to RolloutEstimator(policy))
+        Function, object, or number used to estimate the value at the leaf nodes.
+        If this is a function `f`, `f(pomdp, s, h::BeliefNode, steps)` will be called to estimate the value.
+        If this is an object `o`, `estimate_value(o, pomdp, s, h::BeliefNode, steps)` will be called.
+        If this is a number, the value will be set to that number
+        default: RolloutEstimator(RandomSolver(rng))
+
+    default_action::Any
+        Function, action, or Policy used to determine the action if POMCP fails with exception `ex`.
+        If this is a Function `f`, `f(belief, ex)` will be called.
+        If this is a Policy `p`, `action(p, belief)` will be called.
+        If it is an object `a`, `default_action(a, belief, ex) will be called, and
+        if this method is not implemented, `a` will be returned directly.
+
+    rng::AbstractRNG
+        Random number generator.
+        default: Base.GLOBAL_RNG
+"""
 @with_kw type POMCPSolver <: Solver
     max_depth::Int          = 20
     c::Float64              = 1.0
@@ -41,6 +81,11 @@ type POMCPPlanner{P, SE, RNG} <: Policy
     problem::P
     solved_estimator::SE
     rng::RNG
+end
+
+function POMCPPlanner(solver::POMCPSolver, pomdp::POMDP)
+    se = convert_estimator(solver.estimate_value, solver, pomdp)
+    return POMCPPlanner(solver, pomdp, se, solver.rng)
 end
 
 immutable POMCPTree{A,O}
@@ -103,8 +148,10 @@ function updater(p::POMCPPlanner)
     A = action_type(P)
     O = obs_type(P)
     if !@implemented ParticleFilters.obs_weight(::P, ::S, ::A, ::S, ::O)
-        warn("""
-             The default belief updater for a POMCPSolver is the `SIRParticleFilter` from ParticleFilters.jl. However this requires `ParticleFilters.obs_weight(::$P, ::$S, ::$A, ::$S, ::$O)` You can still use the POMCPSolver without this, but simulation with this updater will probably fail. See the documentation for `ParticleFilters.obs_weight` for more details.
+        error("""
+             $P is not compatible with the default belief updater for POMCP.
+
+                The default belief updater for a POMCPSolver is the `SIRParticleFilter` from ParticleFilters.jl. However this requires `ParticleFilters.obs_weight(::$P, ::$S, ::$A, ::$S, ::$O)`, and this was not implemented. You can still use the POMCPSolver without this, but simulation with this updater will probably fail. See the documentation for `ParticleFilters.obs_weight` for more details.
             """)
     end
     return SIRParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
