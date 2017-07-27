@@ -1,9 +1,7 @@
 # BasicPOMCP
 
 [![Build Status](https://travis-ci.org/JuliaPOMDP/BasicPOMCP.jl.svg?branch=master)](https://travis-ci.org/JuliaPOMDP/BasicPOMCP.jl)
-
 [![Coverage Status](https://coveralls.io/repos/JuliaPOMDP/BasicPOMCP.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/JuliaPOMDP/BasicPOMCP.jl?branch=master)
-
 [![codecov.io](http://codecov.io/github/JuliaPOMDP/BasicPOMCP.jl/coverage.svg?branch=master)](http://codecov.io/github/JuliaPOMDP/BasicPOMCP.jl?branch=master)
 
 The Partially Observable Monte Carlo Planning (POMCP) online solver for [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl).
@@ -14,7 +12,7 @@ Described in
 
 Problems should be specified using the [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) interface. For more information, see the [POMDPs.jl documentation](http://juliapomdp.github.io/POMDPs.jl/latest/).
 
-This package replaces the deprecated [POMDPs.jl package](https://github.com/JuliaPOMDP/POMCP.jl). It has fewer features, but is much simpler.
+This package replaces the deprecated [POMCP.jl package](https://github.com/JuliaPOMDP/POMCP.jl). It has fewer features, but is much simpler.
 
 ## Installation
 
