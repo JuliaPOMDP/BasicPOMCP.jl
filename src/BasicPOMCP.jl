@@ -107,7 +107,7 @@ function POMCPTree(pomdp::POMDP, sz::Int=1000)
     O = obs_type(pomdp)
     return POMCPTree{A,O}(sizehint!(Int[0], sz),
                           sizehint!(Vector{Int}[collect(1:length(acts))], sz),
-                          sizehint!(Array(O,1), sz),
+                          sizehint!(Array{O}(1), sz),
 
                           sizehint!(Dict{Tuple{Int,O},Int}(), sz),
 

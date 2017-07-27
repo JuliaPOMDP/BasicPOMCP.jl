@@ -1,4 +1,4 @@
-abstract NoDecision <: Exception
+abstract type NoDecision <: Exception end
 Base.show(io::IO, nd::NoDecision) = print(io, """
     POMCP failed to choose an action because the following exception was thrown:
     $nd

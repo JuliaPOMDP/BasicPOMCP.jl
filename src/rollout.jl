@@ -2,7 +2,6 @@ type PORollout
     solver::Union{POMDPs.Solver,POMDPs.Policy,Function}
     updater::POMDPs.Updater
 end
-typealias PORolloutEstimator PORollout # for legacy compatibility
 
 type SolvedPORollout{P<:POMDPs.Policy,U<:POMDPs.Updater,RNG<:AbstractRNG}
     policy::P
