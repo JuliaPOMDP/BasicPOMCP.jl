@@ -1,10 +1,10 @@
 # BasicPOMCP
 
-[![Build Status](https://travis-ci.org/zsunberg/BasicPOMCP.jl.svg?branch=master)](https://travis-ci.org/zsunberg/BasicPOMCP.jl)
+[![Build Status](https://travis-ci.org/JuliaPOMDP/BasicPOMCP.jl.svg?branch=master)](https://travis-ci.org/JuliaPOMDP/BasicPOMCP.jl)
 
-[![Coverage Status](https://coveralls.io/repos/zsunberg/BasicPOMCP.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/zsunberg/BasicPOMCP.jl?branch=master)
+[![Coverage Status](https://coveralls.io/repos/JuliaPOMDP/BasicPOMCP.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/JuliaPOMDP/BasicPOMCP.jl?branch=master)
 
-[![codecov.io](http://codecov.io/github/zsunberg/BasicPOMCP.jl/coverage.svg?branch=master)](http://codecov.io/github/zsunberg/BasicPOMCP.jl?branch=master)
+[![codecov.io](http://codecov.io/github/JuliaPOMDP/BasicPOMCP.jl/coverage.svg?branch=master)](http://codecov.io/github/JuliaPOMDP/BasicPOMCP.jl?branch=master)
 
 The Partially Observable Monte Carlo Planning (POMCP) online solver for [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl).
 
