@@ -1,28 +1,28 @@
-type PORollout
+struct PORollout
     solver::Union{POMDPs.Solver,POMDPs.Policy,Function}
     updater::POMDPs.Updater
 end
 
-type SolvedPORollout{P<:POMDPs.Policy,U<:POMDPs.Updater,RNG<:AbstractRNG}
+struct SolvedPORollout{P<:POMDPs.Policy,U<:POMDPs.Updater,RNG<:AbstractRNG}
     policy::P
     updater::U
     rng::RNG
 end
 
-type FORollout # fully observable rollout
+struct FORollout # fully observable rollout
     solver::Union{POMDPs.Solver,POMDPs.Policy}
 end
 
-type SolvedFORollout{P<:POMDPs.Policy,RNG<:AbstractRNG}
+struct SolvedFORollout{P<:POMDPs.Policy,RNG<:AbstractRNG}
     policy::P
     rng::RNG
 end
 
-type FOValue
+struct FOValue
     solver::Union{POMDPs.Solver, POMDPs.Policy}
 end
 
-type SolvedFOValue{P<:POMDPs.Policy}
+struct SolvedFOValue{P<:POMDPs.Policy}
     policy::P
 end
 
@@ -80,7 +80,8 @@ function rollout(est::SolvedPORollout, pomdp::POMDPs.POMDP, start_state, h::POMC
                                         Nullable{Any}(start_state),
                                         Nullable{Float64}(),
                                         Nullable{Int}(steps))
-    return POMDPs.simulate(sim, pomdp, est.policy, est.updater, b)
+    # return POMDPs.simulate(sim, pomdp, est.policy, est.updater, b)
+    return POMDPs.simulate(sim, pomdp, est.policy, est.updater, b, start_state) # <- the secret version with the extra arg might speed this up?
 end
 
 function rollout(est::SolvedFORollout, pomdp::POMDPs.POMDP, start_state, h::POMCPObsNode, steps::Int)
