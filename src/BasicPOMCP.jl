@@ -26,6 +26,8 @@ export
     ExceptionRethrow,
     default_action,
 
+    BeliefNode,
+
     PORollout,
     FORollout,
     RolloutEstimator,
@@ -137,7 +139,9 @@ function insert_action_node!(t::POMCPTree, h::Int, a)
     return length(t.n)
 end
 
-struct POMCPObsNode{A,O}
+abstract BeliefNode
+
+struct POMCPObsNode{A,O} <: BeliefNode
     tree::POMCPTree{A,O}
     node::Int
 end
