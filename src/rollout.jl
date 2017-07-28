@@ -37,7 +37,7 @@ function estimate_value end
 estimate_value(f::Function, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int) = f(pomdp, start_state, h, steps)
 estimate_value(n::Number, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int) = convert(Float64, n)
 
-convert_estimator(ev::Any, solver::POMCPSolver, pomdp::POMDPs.POMDP) = ev
+convert_estimator(ev::Any, solver::AbstractPOMCPSolver, pomdp::POMDPs.POMDP) = ev
 
 function estimate_value(estimator::Union{SolvedPORollout,SolvedFORollout}, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int)
     rollout(estimator, pomdp, start_state, h, steps)
@@ -48,22 +48,22 @@ function estimate_value(estimator::SolvedFOValue, pomdp::POMDPs.POMDP, start_sta
 end
 
 
-function convert_estimator(ev::RolloutEstimator, solver::POMCPSolver, pomdp::POMDPs.POMDP)
+function convert_estimator(ev::RolloutEstimator, solver::AbstractPOMCPSolver, pomdp::POMDPs.POMDP)
     policy = MCTS.convert_to_policy(ev.solver, pomdp)
     SolvedPORollout(policy, updater(policy), solver.rng)
 end
 
-function convert_estimator(ev::PORollout, solver::POMCPSolver, pomdp::POMDPs.POMDP)
+function convert_estimator(ev::PORollout, solver::AbstractPOMCPSolver, pomdp::POMDPs.POMDP)
     policy = MCTS.convert_to_policy(ev.solver, pomdp)
     SolvedPORollout(policy, ev.updater, solver.rng)
 end
 
-function convert_estimator(est::FORollout, solver::POMCPSolver, pomdp::POMDPs.POMDP)
+function convert_estimator(est::FORollout, solver::AbstractPOMCPSolver, pomdp::POMDPs.POMDP)
     policy = MCTS.convert_to_policy(est.solver, pomdp)
     SolvedFORollout(policy, solver.rng)
 end
 
-function convert_estimator(est::FOValue, solver::POMCPSolver, pomdp::POMDPs.POMDP)
+function convert_estimator(est::FOValue, solver::AbstractPOMCPSolver, pomdp::POMDPs.POMDP)
     policy = MCTS.convert_to_policy(est.solver, pomdp)
     SolvedFOValue(policy)
 end

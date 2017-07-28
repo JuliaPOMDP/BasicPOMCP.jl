@@ -16,6 +16,7 @@ using ParticleFilters
 import POMDPs: action, solve, updater
 
 using MCTS
+import MCTS: convert_estimator, estimate_value
 
 export
     POMCPSolver,
@@ -27,12 +28,14 @@ export
     default_action,
 
     BeliefNode,
+    AbstractPOMCPSolver,
 
     PORollout,
     FORollout,
     RolloutEstimator,
     FOValue
 
+abstract type AbstractPOMCPSolver <: Solver end
 
 """
     POMCPSolver(#=keyword arguments=#)
@@ -69,7 +72,7 @@ Partially Observable Monte Carlo Planning Solver. Options are set using the keyw
         Random number generator.
         default: Base.GLOBAL_RNG
 """
-@with_kw mutable struct POMCPSolver <: Solver
+@with_kw mutable struct POMCPSolver <: AbstractPOMCPSolver
     max_depth::Int          = 20
     c::Float64              = 1.0
     tree_queries::Int       = 1000
@@ -139,7 +142,7 @@ function insert_action_node!(t::POMCPTree, h::Int, a)
     return length(t.n)
 end
 
-abstract BeliefNode
+abstract type BeliefNode <: AbstractStateNode end
 
 struct POMCPObsNode{A,O} <: BeliefNode
     tree::POMCPTree{A,O}
