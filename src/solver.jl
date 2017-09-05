@@ -1,5 +1,5 @@
 function action(p::POMCPPlanner, b)
-    local a
+    local a::action_type(p.problem)
     try
         a = search(p, b, POMCPTree(p.problem, p.solver.tree_queries))
     catch ex
@@ -11,7 +11,11 @@ end
 
 function search(p::POMCPPlanner, b, t::POMCPTree)
     all_terminal = true
+    start_us = CPUtime_us()
     for i in 1:p.solver.tree_queries
+        if CPUtime_us() - start_us >= 1e6*p.solver.max_time
+            break
+        end
         s = rand(p.rng, b)
         if !POMDPs.isterminal(p.problem, s)
             simulate(p, s, POMCPObsNode(t, 1), p.solver.max_depth)

@@ -14,6 +14,7 @@ using POMDPs
 using Parameters
 using POMDPToolbox
 using ParticleFilters
+using CPUTime
 
 import POMDPs: action, solve, updater
 
@@ -78,6 +79,7 @@ Partially Observable Monte Carlo Planning Solver. Options are set using the keyw
     max_depth::Int          = 20
     c::Float64              = 1.0
     tree_queries::Int       = 1000
+    max_time::Float64       = Inf
     estimate_value::Any     = RolloutEstimator(RandomSolver())
     default_action::Any     = ExceptionRethrow()
     rng::AbstractRNG        = Base.GLOBAL_RNG
@@ -112,6 +114,7 @@ function POMCPTree(pomdp::POMDP, sz::Int=1000)
     acts = collect(iterator(actions(pomdp)))
     A = action_type(pomdp)
     O = obs_type(pomdp)
+    sz = min(10_000_000, sz)
     return POMCPTree{A,O}(sizehint!(Int[0], sz),
                           sizehint!(Vector{Int}[collect(1:length(acts))], sz),
                           sizehint!(Array{O}(1), sz),
