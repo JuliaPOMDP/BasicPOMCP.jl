@@ -48,17 +48,17 @@ function estimate_value(estimator::SolvedFOValue, pomdp::POMDPs.POMDP, start_sta
 end
 
 
-function convert_estimator(ev::RolloutEstimator, solver::AbstractPOMCPSolver, pomdp::POMDPs.POMDP)
+function convert_estimator(ev::RolloutEstimator, solver, pomdp)
     policy = MCTS.convert_to_policy(ev.solver, pomdp)
     SolvedPORollout(policy, updater(policy), solver.rng)
 end
 
-function convert_estimator(ev::PORollout, solver::AbstractPOMCPSolver, pomdp::POMDPs.POMDP)
+function convert_estimator(ev::PORollout, solver, pomdp)
     policy = MCTS.convert_to_policy(ev.solver, pomdp)
     SolvedPORollout(policy, ev.updater, solver.rng)
 end
 
-function convert_estimator(est::FORollout, solver::AbstractPOMCPSolver, pomdp::POMDPs.POMDP)
+function convert_estimator(est::FORollout, solver, pomdp)
     policy = MCTS.convert_to_policy(est.solver, pomdp)
     SolvedFORollout(policy, solver.rng)
 end
