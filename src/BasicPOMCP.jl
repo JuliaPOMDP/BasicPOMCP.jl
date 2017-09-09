@@ -97,6 +97,8 @@ function POMCPPlanner(solver::POMCPSolver, pomdp::POMDP)
     return POMCPPlanner(solver, pomdp, se, solver.rng)
 end
 
+Base.srand(p::POMCPPlanner, seed) = srand(p.rng, seed)
+
 struct POMCPTree{A,O}
     # for each observation-terminated history
     total_n::Vector{Int}
@@ -114,7 +116,7 @@ function POMCPTree(pomdp::POMDP, sz::Int=1000)
     acts = collect(iterator(actions(pomdp)))
     A = action_type(pomdp)
     O = obs_type(pomdp)
-    sz = min(10_000_000, sz)
+    sz = min(100_000, sz)
     return POMCPTree{A,O}(sizehint!(Int[0], sz),
                           sizehint!(Vector{Int}[collect(1:length(acts))], sz),
                           sizehint!(Array{O}(1), sz),
