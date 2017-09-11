@@ -90,11 +90,12 @@ mutable struct POMCPPlanner{P, SE, RNG} <: Policy
     problem::P
     solved_estimator::SE
     rng::RNG
+    _best_node_mem::Vector{Int}
 end
 
 function POMCPPlanner(solver::POMCPSolver, pomdp::POMDP)
     se = convert_estimator(solver.estimate_value, solver, pomdp)
-    return POMCPPlanner(solver, pomdp, se, solver.rng)
+    return POMCPPlanner(solver, pomdp, se, solver.rng, Int[])
 end
 
 Base.srand(p::POMCPPlanner, seed) = srand(p.rng, seed)
