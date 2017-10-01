@@ -1,6 +1,6 @@
 abstract type NoDecision <: Exception end
 Base.show(io::IO, nd::NoDecision) = print(io, """
-    POMCP failed to choose an action because the following exception was thrown:
+    Planner failed to choose an action because the following exception was thrown:
     $nd
 
     To specify an action for this case, use the default_action solver parameter.
@@ -10,7 +10,7 @@ immutable AllSamplesTerminal <: NoDecision
     belief
 end
 Base.show(io::IO, ast::AllSamplesTerminal) = print(io, """
-    POMCP failed to choose an action because all states sampled from the belief were terminal.
+    Planner failed to choose an action because all states sampled from the belief were terminal.
 
     To see the belief, catch this exception as ex and see ex.belief.
     
