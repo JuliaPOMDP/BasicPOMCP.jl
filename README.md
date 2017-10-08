@@ -95,7 +95,7 @@ Partially Observable Monte Carlo Planning Solver. Options are set using the keyw
 
 ## Belief Update
 
-This solver does not currently implement the decision-making simulations for the belief update as in the original Silver and Veness paper. We have found that unweighted particle filtering approach to be unuseful in practice because
+This solver does not reuse decision-making simulations for the belief update as in the original Silver and Veness paper. We have found that unweighted particle filtering approach to be unuseful in practice because
 
 1. The number of particles that comprise the next belief is small because only the particles in the branch corresponding to the actual action and observation can be used,
 2. Even in the Silver and Veness paper, domain-specific particle reinvigoration must be used, and
