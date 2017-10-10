@@ -163,15 +163,7 @@ function updater(p::POMCPPlanner)
     A = action_type(P)
     O = obs_type(P)
     if !@implemented ParticleFilters.obs_weight(::P, ::S, ::A, ::S, ::O)
-        if Pkg.installed("ParticleFilters") >= v"0.1.1"
-            return UnweightedParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
-        else
-            error("""
-                  $P is not compatible with the default belief updater for POMCP.
-
-                  The default belief updater for a POMCPSolver is the `SIRParticleFilter` from ParticleFilters.jl. However this requires `ParticleFilters.obs_weight(::$P, ::$S, ::$A, ::$S, ::$O)`, and this was not implemented. You can still use the POMCPSolver without this, but simulation with this updater will probably fail. See the documentation for `ParticleFilters.obs_weight` for more details.
-                  """)
-        end
+        return UnweightedParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
     end
     return SIRParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
 end
