@@ -28,6 +28,10 @@ export
     POMCPSolver,
     POMCPPlanner,
 
+    action,
+    solve,
+    updater,
+
     NoDecision,
     AllSamplesTerminal,
     ExceptionRethrow,

@@ -105,4 +105,17 @@ Instead, a custom belief updater, or an updater from [ParticleFilters.jl](https:
 
 ## Visualization
 
-Tree visualization is not yet implemented for this solver.
+The search tree can be visualized with [D3Trees.jl](https://github.com/sisl/D3Trees.jl) after running the `action()` function as follows:
+
+```julia
+using BasicPOMCP
+using POMDPModels
+using D3Trees
+
+pomdp = BabyPOMDP()
+solver = POMCPSolver(tree_queries=1000, rng = MersenneTwister(1))
+planner = solve(solver, pomdp)
+action(planner, initial_state_distribution(pomdp))
+
+inchrome(D3Tree(planner))
+```
