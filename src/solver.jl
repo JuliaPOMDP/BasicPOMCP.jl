@@ -1,7 +1,9 @@
 function action(p::POMCPPlanner, b)
     local a::action_type(p.problem)
     try
-        a = search(p, b, POMCPTree(p.problem, p.solver.tree_queries))
+        tree = POMCPTree(p.problem, p.solver.tree_queries)
+        a = search(p, b, tree)
+        p._tree = Nullable(tree)
     catch ex
         # Note: this might not be type stable, but it shouldn't matter too much here
         a = convert(action_type(p.problem), default_action(p.solver.default_action, b, ex))
