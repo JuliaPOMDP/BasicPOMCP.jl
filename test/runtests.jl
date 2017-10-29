@@ -4,6 +4,7 @@ using POMDPs
 using POMDPModels
 using POMDPToolbox
 using NBInclude
+using D3Trees
 
 test_solver(POMCPSolver(), BabyPOMDP())
 
@@ -25,4 +26,14 @@ action(planner, initial_state_distribution(pomdp))
 println("time below should be about 0.1 seconds")
 @time action(planner, initial_state_distribution(pomdp))
 
+solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng = MersenneTwister(1))
+planner = solve(solver, pomdp)
+action(planner, initial_state_distribution(pomdp))
+
+d3t = D3Tree(planner, title="test")
+# inchrome(d3t)
+
 nbinclude(joinpath(dirname(@__FILE__), "..", "notebooks", "Minimal_Example.ipynb"))
+
+d3t = D3Tree(planner, title="test")
+# inchrome(d3t)

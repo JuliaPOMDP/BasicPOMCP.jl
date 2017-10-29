@@ -15,11 +15,14 @@ using Parameters
 using POMDPToolbox
 using ParticleFilters
 using CPUTime
+using Colors
 
 import POMDPs: action, solve, updater
 
 using MCTS
-import MCTS: convert_estimator, estimate_value
+import MCTS: convert_estimator, estimate_value, node_tag, tooltip_tag
+
+using D3Trees
 
 export
     POMCPSolver,
@@ -36,7 +39,11 @@ export
     PORollout,
     FORollout,
     RolloutEstimator,
-    FOValue
+    FOValue,
+
+    D3Tree,
+    node_tag,
+    tooltip_tag
 
 abstract type AbstractPOMCPSolver <: Solver end
 
@@ -85,21 +92,6 @@ Partially Observable Monte Carlo Planning Solver. Options are set using the keyw
     rng::AbstractRNG        = Base.GLOBAL_RNG
 end
 
-mutable struct POMCPPlanner{P, SE, RNG} <: Policy
-    solver::POMCPSolver
-    problem::P
-    solved_estimator::SE
-    rng::RNG
-    _best_node_mem::Vector{Int}
-end
-
-function POMCPPlanner(solver::POMCPSolver, pomdp::POMDP)
-    se = convert_estimator(solver.estimate_value, solver, pomdp)
-    return POMCPPlanner(solver, pomdp, se, solver.rng, Int[])
-end
-
-Base.srand(p::POMCPPlanner, seed) = srand(p.rng, seed)
-
 struct POMCPTree{A,O}
     # for each observation-terminated history
     total_n::Vector{Int}
@@ -113,6 +105,7 @@ struct POMCPTree{A,O}
     v::Vector{Float64}
     a_labels::Vector{A}
 end
+
 function POMCPTree(pomdp::POMDP, sz::Int=1000)
     acts = collect(iterator(actions(pomdp)))
     A = action_type(pomdp)
@@ -157,6 +150,23 @@ struct POMCPObsNode{A,O} <: BeliefNode
     node::Int
 end
 
+mutable struct POMCPPlanner{P, SE, RNG} <: Policy
+    solver::POMCPSolver
+    problem::P
+    solved_estimator::SE
+    rng::RNG
+    _best_node_mem::Vector{Int}
+    _tree::Nullable
+end
+
+function POMCPPlanner(solver::POMCPSolver, pomdp::POMDP)
+    se = convert_estimator(solver.estimate_value, solver, pomdp)
+    return POMCPPlanner(solver, pomdp, se, solver.rng, Int[], Nullable())
+end
+
+Base.srand(p::POMCPPlanner, seed) = srand(p.rng, seed)
+
+
 function updater(p::POMCPPlanner)
     P = typeof(p.problem)
     S = state_type(P)
@@ -183,5 +193,6 @@ include("solver.jl")
 
 include("exceptions.jl")
 include("rollout.jl")
+include("visualization.jl")
 
 end # module
