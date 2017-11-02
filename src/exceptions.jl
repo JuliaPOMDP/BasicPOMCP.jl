@@ -24,3 +24,18 @@ default_action(::ExceptionRethrow, belief, ex) = rethrow(ex)
 default_action(f::Function, belief, ex) = f(belief, ex)
 default_action(p::POMDPs.Policy, belief, ex) = action(p, belief)
 default_action(a, belief, ex) = a
+
+"""
+    ReportWhenUsed(a)
+
+When the planner fails, returns action `a`, but also prints the exception.
+"""
+immutable ReportWhenUsed{T}
+    a::T
+end
+
+function default_action(r::ReportWhenUsed, belief, ex)
+    showerror(STDERR, ex)
+    warn("Using default action $(r.a)")
+    return r.a
+end

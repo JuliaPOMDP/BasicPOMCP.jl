@@ -35,6 +35,7 @@ export
     NoDecision,
     AllSamplesTerminal,
     ExceptionRethrow,
+    ReportWhenUsed,
     default_action,
 
     BeliefNode,
