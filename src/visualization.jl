@@ -1,11 +1,11 @@
-function D3Trees.D3Tree(p::POMCPPlanner; title="POMCP Tree")
+function D3Trees.D3Tree(p::POMCPPlanner; title="POMCP Tree", kwargs...)
     if isnull(p._tree)
         error("POMCPPlanner has not constructed a tree yet, run `action(planner, belief)` first to construct the tree.")
     end
-    return D3Tree(get(p._tree), title=title)
+    return D3Tree(get(p._tree); title=title, kwargs...)
 end
 
-function D3Trees.D3Tree(t::POMCPTree; title="POMCP Tree")
+function D3Trees.D3Tree(t::POMCPTree; title="POMCP Tree", kwargs...)
     lenb = length(t.total_n)
     lenba = length(t.n)
     len = lenb + lenba
@@ -53,15 +53,20 @@ function D3Trees.D3Tree(t::POMCPTree; title="POMCP Tree")
         link_width = max(1.0, 20.0*sqrt(t.n[ba]/t.total_n[1]))
         link_style[ba+lenb] = "stroke-width:$link_width"
         rel_V = (t.v[ba]-min_V)/(max_V-min_V)
-        color = weighted_color_mean(rel_V, colorant"green", colorant"red")
+        if isnan(rel_V)
+            color = colorant"gray"
+        else
+            color = weighted_color_mean(rel_V, colorant"green", colorant"red")
+        end
         style[ba+lenb] = "stroke:#$(hex(color))"
     end
-    return D3Tree(children,
+    return D3Tree(children;
                   text=text,
                   tooltip=tt,
                   style=style,
                   link_style=link_style,
-                  title=title
+                  title=title,
+                  kwargs...
                  )
 
 end
