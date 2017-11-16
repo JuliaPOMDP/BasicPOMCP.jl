@@ -20,10 +20,11 @@ Base.show(io::IO, ast::AllSamplesTerminal) = print(io, """
 
 immutable ExceptionRethrow end
 
-default_action(::ExceptionRethrow, belief, ex) = rethrow(ex)
-default_action(f::Function, belief, ex) = f(belief, ex)
-default_action(p::POMDPs.Policy, belief, ex) = action(p, belief)
-default_action(a, belief, ex) = a
+default_action(::ExceptionRethrow, pomdp, belief, ex) = rethrow(ex)
+default_action(f::Function, pomdp, belief, ex) = f(belief, ex)
+default_action(p::POMDPs.Policy, pomdp, belief, ex) = action(p, belief)
+default_action(s::POMDPs.Solver, pomdp, belief, ex) = action(solve(s, pomdp), belief)
+default_action(a, pomdp, belief, ex) = a
 
 """
     ReportWhenUsed(a)
@@ -34,7 +35,7 @@ immutable ReportWhenUsed{T}
     a::T
 end
 
-function default_action(r::ReportWhenUsed, belief, ex)
+function default_action(r::ReportWhenUsed, pomdp, belief, ex)
     showerror(STDERR, ex)
     warn("Using default action $(r.a)")
     return r.a

@@ -6,7 +6,7 @@ function action(p::POMCPPlanner, b)
         p._tree = Nullable(tree)
     catch ex
         # Note: this might not be type stable, but it shouldn't matter too much here
-        a = convert(action_type(p.problem), default_action(p.solver.default_action, b, ex))
+        a = convert(action_type(p.problem), default_action(p.solver.default_action, p.problem, b, ex))
     end
     return a
 end
