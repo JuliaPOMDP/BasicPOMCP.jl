@@ -37,3 +37,15 @@ nbinclude(joinpath(dirname(@__FILE__), "..", "notebooks", "Minimal_Example.ipynb
 
 d3t = D3Tree(planner, title="test")
 # inchrome(d3t)
+
+# test consistency when rng is specified
+pomdp = BabyPOMDP()
+solver = POMCPSolver(rng = MersenneTwister(1))
+planner = solve(solver, pomdp)
+hist1 = simulate(HistoryRecorder(max_steps=1000, rng=MersenneTwister(3)), pomdp, planner)
+
+solver = POMCPSolver(rng = MersenneTwister(1))
+planner = solve(solver, pomdp)
+hist2 = simulate(HistoryRecorder(max_steps=1000, rng=MersenneTwister(3)), pomdp, planner)
+
+@test discounted_reward(hist1) == discounted_reward(hist2)

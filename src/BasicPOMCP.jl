@@ -92,9 +92,9 @@ Partially Observable Monte Carlo Planning Solver. Options are set using the keyw
     c::Float64              = 1.0
     tree_queries::Int       = 1000
     max_time::Float64       = Inf
-    estimate_value::Any     = RolloutEstimator(RandomSolver())
     default_action::Any     = ExceptionRethrow()
     rng::AbstractRNG        = Base.GLOBAL_RNG
+    estimate_value::Any     = RolloutEstimator(RandomSolver(rng))
 end
 
 struct POMCPTree{A,O}
