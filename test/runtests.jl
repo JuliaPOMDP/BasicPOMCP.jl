@@ -49,3 +49,12 @@ planner = solve(solver, pomdp)
 hist2 = simulate(HistoryRecorder(max_steps=1000, rng=MersenneTwister(3)), pomdp, planner)
 
 @test discounted_reward(hist1) == discounted_reward(hist2)
+
+# REQUIREMENTS
+solver = POMCPSolver()
+pomdp = TigerPOMDP()
+
+println("============== @requirements_info with only solver:")
+@requirements_info solver
+println("============== @requirements_info with solver and pomdp:")
+@requirements_info solver pomdp

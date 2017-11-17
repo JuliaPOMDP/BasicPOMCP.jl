@@ -41,6 +41,10 @@ function estimate_value(estimator::Union{SolvedPORollout,SolvedFORollout}, pomdp
     rollout(estimator, pomdp, start_state, h, steps)
 end
 
+@POMDP_require estimate_value(estimator::Union{SolvedPORollout,SolvedFORollout}, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int) begin
+    @subreq rollout(estimator, pomdp, start_state, h, steps)
+end
+
 function estimate_value(estimator::SolvedFOValue, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int)
     POMDPs.value(estimator.policy, start_state)
 end
@@ -78,9 +82,19 @@ function rollout(est::SolvedPORollout, pomdp::POMDPs.POMDP, start_state, h::Beli
                                         Nullable{Any}(start_state),
                                         Nullable{Float64}(),
                                         Nullable{Int}(steps))
-    # return POMDPs.simulate(sim, pomdp, est.policy, est.updater, b)
-    return POMDPs.simulate(sim, pomdp, est.policy, est.updater, b, start_state) # <- the secret version with the extra arg might speed this up?
+    return POMDPs.simulate(sim, pomdp, est.policy, est.updater, b, start_state)
 end
+
+@POMDP_require rollout(est::SolvedPORollout, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int) begin
+    @req extract_belief(::typeof(est.updater), ::typeof(h))
+    b = extract_belief(est.updater, h)
+    sim = POMDPToolbox.RolloutSimulator(est.rng,
+                                        Nullable{Any}(start_state),
+                                        Nullable{Float64}(),
+                                        Nullable{Int}(steps))
+    @subreq POMDPs.simulate(sim, pomdp, est.policy, est.updater, b, start_state)
+end
+
 
 function rollout(est::SolvedFORollout, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int)
     sim = POMDPToolbox.RolloutSimulator(est.rng,
@@ -89,6 +103,16 @@ function rollout(est::SolvedFORollout, pomdp::POMDPs.POMDP, start_state, h::Beli
                                         Nullable{Int}(steps))
     return POMDPToolbox.simulate(sim, pomdp, est.policy, start_state)
 end
+
+@POMDP_require rollout(est::SolvedFORollout, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int) begin
+    sim = POMDPToolbox.RolloutSimulator(est.rng,
+                                        Nullable{Any}(start_state),
+                                        Nullable{Float64}(),
+                                        Nullable{Int}(steps))
+    @subreq POMDPToolbox.simulate(sim, pomdp, est.policy, start_state)
+end
+
+
 
 """
     extract_belief(rollout_updater::POMDPs.Updater, node::BeliefNode)
