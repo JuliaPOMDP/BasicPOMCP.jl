@@ -78,6 +78,7 @@ end
     AS = typeof(actions(p.problem))
     @req iterator(::AS)
     @subreq estimate_value(p.solved_estimator, p.problem, s, hnode, steps)
+    @req discount(::P)
 end
 
 @POMDP_require estimate_value(f::Function, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int) begin
