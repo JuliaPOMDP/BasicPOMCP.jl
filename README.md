@@ -56,42 +56,44 @@ Solver options are set with keyword arguments to the `BasicPOMCP` constructor. T
 
 The output of `?POMCPSolver` is printed below, but may not be up to date.
 
-```
-    POMCPSolver(#=keyword arguments=#)
+>     POMCPSolver(#=keyword arguments=#)
+> 
+> Partially Observable Monte Carlo Planning Solver.
+> 
+> ## Keyword Arguments
+> 
+> - `max_depth::Int`
+>     Rollouts and tree expension will stop when this depth is reached.
+>     default: `20`
+> 
+> - `c::Float64`
+>     UCB exploration constant - specifies how much the solver should explore.
+>     default: `1.0`
+> 
+> - `tree_queries::Int`
+>     Number of iterations during each action() call.
+>     default: `1000`
+> 
+> - `estimate_value::Any`
+>     Function, object, or number used to estimate the value at the leaf nodes.
+>     default: `RolloutEstimator(RandomSolver(rng))`
+>     - If this is a function `f`, `f(pomdp, s, h::BeliefNode, steps)` will be called to estimate the value.
+>     - If this is an object `o`, `estimate_value(o, pomdp, s, h::BeliefNode, steps)` will be called.
+>     - If this is a number, the value will be set to that number
+>     Note: In many cases, the simplest way to estimate the value is to do a rollout on the fully observable MDP with a policy that is a function of the state. To do this, use `FORollout(policy)`.
+> 
+> - `default_action::Any`
+>     Function, action, or Policy used to determine the action if POMCP fails with exception `ex`.
+>     default: `ExceptionRethrow()`
+>     - If this is a Function `f`, `f(pomdp, belief, ex)` will be called.
+>     - If this is a Policy `p`, `action(p, belief)` will be called.
+>     - If it is an object `a`, `default_action(a, pomdp, belief, ex)` will be called, and if this method is not implemented, `a` will be returned directly.
+> 
+> - `rng::AbstractRNG`
+>     Random number generator.
+>     default: `Base.GLOBAL_RNG`
 
-Partially Observable Monte Carlo Planning Solver. Options are set using the keyword arguments below:
 
-    max_depth::Int
-        Rollouts and tree expension will stop when this depth is reached.
-        default: 20
-
-    c::Float64
-        UCB exploration constant - specifies how much the solver should explore.
-        default: 1.0
-
-    tree_queries::Int
-        Number of iterations during each action() call.
-        default: 1000
-
-    estimate_value::Any (rollout policy can be specified by setting this to RolloutEstimator(policy))
-        Function, object, or number used to estimate the value at the leaf nodes.
-        If this is a function `f`, `f(pomdp, s, h::BeliefNode, steps)` will be called to estimate the value.
-        If this is an object `o`, `estimate_value(o, pomdp, s, h::BeliefNode, steps)` will be called.
-        If this is a number, the value will be set to that number
-        default: RolloutEstimator(RandomSolver(rng))
-
-    default_action::Any
-        Function, action, or Policy used to determine the action if POMCP fails with exception `ex`.
-        If this is a Function `f`, `f(belief, ex)` will be called.
-        If this is a Policy `p`, `action(p, belief)` will be called.
-        If it is an object `a`, `default_action(a, belief, ex) will be called, and
-        if this method is not implemented, `a` will be returned directly.
-
-    rng::AbstractRNG
-        Random number generator.
-        default: Base.GLOBAL_RNG
-
-```
 
 ## Belief Update
 
