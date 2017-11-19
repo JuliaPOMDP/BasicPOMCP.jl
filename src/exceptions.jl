@@ -38,5 +38,5 @@ end
 function default_action(r::ReportWhenUsed, pomdp, belief, ex)
     showerror(STDERR, ex)
     warn("Using default action $(r.a)")
-    return r.a
+    return default_action(r.a, pomdp, belief, ex)
 end
