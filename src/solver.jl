@@ -46,7 +46,7 @@ end
 solve(solver::POMCPSolver, pomdp::POMDP) = POMCPPlanner(solver, pomdp)
 
 function simulate(p::POMCPPlanner, s, hnode::POMCPObsNode, steps::Int)
-    if steps == 0
+    if steps == 0 || isterminal(p.problem, s)
         return 0.0
     end
     
