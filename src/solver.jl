@@ -1,18 +1,24 @@
-function action(p::POMCPPlanner, b)
+function action_info(p::POMCPPlanner, b)
     local a::action_type(p.problem)
+    info = Dict{Symbol, Any}()
     try
         tree = POMCPTree(p.problem, p.solver.tree_queries)
-        a = search(p, b, tree)
+        a = search(p, b, tree, info)
         p._tree = Nullable(tree)
+        info[:tree] = tree
     catch ex
         # Note: this might not be type stable, but it shouldn't matter too much here
         a = convert(action_type(p.problem), default_action(p.solver.default_action, p.problem, b, ex))
+        info[:exception] = ex
     end
-    return a
+    return a, info
 end
 
-function search(p::POMCPPlanner, b, t::POMCPTree)
+action(p::POMCPPlanner, b) = first(action_info(p, b))
+
+function search(p::POMCPPlanner, b, t::POMCPTree, info::Dict)
     all_terminal = true
+    i = 0
     start_us = CPUtime_us()
     for i in 1:p.solver.tree_queries
         if CPUtime_us() - start_us >= 1e6*p.solver.max_time
@@ -24,6 +30,8 @@ function search(p::POMCPPlanner, b, t::POMCPTree)
             all_terminal = false
         end
     end
+    info[:search_time_us] = CPUtime_us() - start_us
+    info[:tree_queries] = i
 
     if all_terminal
         throw(AllSamplesTerminal(b))

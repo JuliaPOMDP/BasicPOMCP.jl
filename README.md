@@ -14,6 +14,8 @@ Problems should be specified using the [POMDPs.jl](https://github.com/JuliaPOMDP
 
 This package replaces the deprecated [POMCP.jl package](https://github.com/JuliaPOMDP/POMCP.jl). It has fewer features, but is much simpler.
 
+![POMCP Tree](img/tree.png)
+
 ## Installation
 
 Using POMDPs.jl
@@ -105,19 +107,22 @@ This solver does not reuse decision-making simulations for the belief update as 
 
 Instead, a custom belief updater, or an updater from [ParticleFilters.jl](https://github.com/JuliaPOMDP/ParticleFilters.jl) should be used.
 
-## Visualization
+## Tree Visualization
 
-The search tree can be visualized with [D3Trees.jl](https://github.com/sisl/D3Trees.jl) after running the `action()` function as follows:
+The search tree can be visualized with [D3Trees.jl](https://github.com/sisl/D3Trees.jl) after running the `action_info()` function as follows:
 
 ```julia
 using BasicPOMCP
 using POMDPModels
+using POMDPToolbox
 using D3Trees
 
 pomdp = BabyPOMDP()
-solver = POMCPSolver(tree_queries=1000, rng = MersenneTwister(1))
+solver = POMCPSolver(tree_queries=1000, c=10.0, rng=MersenneTwister(1))
 planner = solve(solver, pomdp)
-action(planner, initial_state_distribution(pomdp))
+a, info = action_info(planner, initial_state_distribution(pomdp))
 
-inchrome(D3Tree(planner))
+inchrome(D3Tree(info[:tree], init_expand=3))
 ```
+
+This should produce the image at the top of the README.

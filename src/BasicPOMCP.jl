@@ -18,6 +18,7 @@ using CPUTime
 using Colors
 
 import POMDPs: action, solve, updater, requirements_info
+import POMDPToolbox: action_info
 
 using MCTS
 import MCTS: convert_estimator, estimate_value, node_tag, tooltip_tag
