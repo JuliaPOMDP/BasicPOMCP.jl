@@ -25,8 +25,7 @@ function D3Trees.D3Tree(t::POMCPTree; title="POMCP Tree", kwargs...)
         children[b] = t.children[b] .+ lenb
         text[b] = @sprintf("""
                            o: %s
-                           N: %-10d
-                           """,
+                           N: %-10d""",
                            b==1 ? "<root>" : node_tag(t.o_labels[b]),
                            t.total_n[b]
                           )
