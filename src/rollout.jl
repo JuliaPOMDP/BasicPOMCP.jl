@@ -119,7 +119,7 @@ end
 
 Return a belief compatible with the `rollout_updater` from the belief in `node`.
 
-When a rollout simulation is started, this function is used to create the initial belief (compatible with `rollout_updater`) based on the appropriate `BeliefNode` at the edge of the tree. By overriding this, a belief can be constructed based on the entire tree or entire observation-action history. If this is not overriden, by default it will use initialize_belief on the belief associated with the node directly, i.e. `POMDPs.initialize_belief(rollout_updater, node.B)`.
+When a rollout simulation is started, this function is used to create the initial belief (compatible with `rollout_updater`) based on the appropriate `BeliefNode` at the edge of the tree. By overriding this, a belief can be constructed based on the entire tree or entire observation-action history.
 """
 function extract_belief end
 
