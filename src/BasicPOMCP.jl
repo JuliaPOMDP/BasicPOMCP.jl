@@ -21,7 +21,7 @@ import POMDPs: action, solve, updater, requirements_info
 import POMDPToolbox: action_info
 
 using MCTS
-import MCTS: convert_estimator, estimate_value, node_tag, tooltip_tag
+import MCTS: convert_estimator, estimate_value, node_tag, tooltip_tag, default_action
 
 using D3Trees
 

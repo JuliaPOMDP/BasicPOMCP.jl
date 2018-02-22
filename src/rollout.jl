@@ -72,8 +72,6 @@ end
 
 
 """
-    rollout(pomcp::POMCPPlanner, start_state, h::BeliefNode)
-
 Perform a rollout simulation to estimate the value.
 """
 function rollout(est::SolvedPORollout, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int)
