@@ -5,7 +5,9 @@ function action_info(p::POMCPPlanner, b)
         tree = POMCPTree(p.problem, p.solver.tree_queries)
         a = search(p, b, tree, info)
         p._tree = Nullable(tree)
-        info[:tree] = tree
+        if p.solver.tree_in_info
+            info[:tree] = tree
+        end
     catch ex
         # Note: this might not be type stable, but it shouldn't matter too much here
         a = convert(action_type(p.problem), default_action(p.solver.default_action, p.problem, b, ex))
