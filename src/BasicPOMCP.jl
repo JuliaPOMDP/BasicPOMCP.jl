@@ -72,6 +72,14 @@ Partially Observable Monte Carlo Planning Solver.
     Number of iterations during each action() call.
     default: `1000`
 
+- `max_time::Float64`
+    Maximum time for planning in each action() call.
+    default: `Inf`
+
+- `tree_in_info::Bool`
+    If `true`, returns the tree in the info dict when action_info is called.
+    default: `true`
+
 - `estimate_value::Any`
     Function, object, or number used to estimate the value at the leaf nodes.
     default: `RolloutEstimator(RandomSolver(rng))`
@@ -96,6 +104,7 @@ Partially Observable Monte Carlo Planning Solver.
     c::Float64              = 1.0
     tree_queries::Int       = 1000
     max_time::Float64       = Inf
+    tree_in_info::Bool      = true
     default_action::Any     = ExceptionRethrow()
     rng::AbstractRNG        = Base.GLOBAL_RNG
     estimate_value::Any     = RolloutEstimator(RandomSolver(rng))
