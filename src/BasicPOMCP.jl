@@ -78,7 +78,7 @@ Partially Observable Monte Carlo Planning Solver.
 
 - `tree_in_info::Bool`
     If `true`, returns the tree in the info dict when action_info is called.
-    default: `true`
+    default: `false`
 
 - `estimate_value::Any`
     Function, object, or number used to estimate the value at the leaf nodes.
@@ -104,7 +104,7 @@ Partially Observable Monte Carlo Planning Solver.
     c::Float64              = 1.0
     tree_queries::Int       = 1000
     max_time::Float64       = Inf
-    tree_in_info::Bool      = true
+    tree_in_info::Bool      = false
     default_action::Any     = ExceptionRethrow()
     rng::AbstractRNG        = Base.GLOBAL_RNG
     estimate_value::Any     = RolloutEstimator(RandomSolver(rng))

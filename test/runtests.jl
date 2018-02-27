@@ -29,12 +29,19 @@ println("time below should be about 0.1 seconds")
 
 solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng = MersenneTwister(1))
 planner = solve(solver, pomdp)
-a, info = action_info(planner, initial_state_distribution(pomdp))
+a, info = action_info(planner, initial_state_distribution(pomdp), tree_in_info=true)
 
 d3t = D3Tree(planner, title="test")
 d3t = D3Tree(info[:tree], title="test tree")
 # inchrome(d3t)
 show(STDOUT, MIME("text/plain"), d3t)
+
+
+solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng=MersenneTwister(1), tree_in_info=true)
+planner = solve(solver, pomdp)
+a, info = action_info(planner, initial_state_distribution(pomdp))
+
+d3t = D3Tree(info[:tree], title="test tree (tree_in_info solver option)")
 
 nbinclude(joinpath(dirname(@__FILE__), "..", "notebooks", "Minimal_Example.ipynb"))
 

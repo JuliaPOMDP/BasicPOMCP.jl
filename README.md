@@ -109,7 +109,7 @@ Instead, a custom belief updater, or an updater from [ParticleFilters.jl](https:
 
 ## Tree Visualization
 
-The search tree can be visualized with [D3Trees.jl](https://github.com/sisl/D3Trees.jl) after running the `action_info()` function as follows:
+The search tree can be visualized with [D3Trees.jl](https://github.com/sisl/D3Trees.jl) after running the `action_info()` as in the example below. **Note: tree_in_info must be set to true either as a solver option or as a keyword argument to action_info() for this to work** (it is disabled by default because it can use a lot of memory).
 
 ```julia
 using BasicPOMCP
@@ -120,7 +120,7 @@ using D3Trees
 pomdp = BabyPOMDP()
 solver = POMCPSolver(tree_queries=1000, c=10.0, rng=MersenneTwister(1))
 planner = solve(solver, pomdp)
-a, info = action_info(planner, initial_state_distribution(pomdp))
+a, info = action_info(planner, initial_state_distribution(pomdp), tree_in_info=true)
 
 inchrome(D3Tree(info[:tree], init_expand=3))
 ```
