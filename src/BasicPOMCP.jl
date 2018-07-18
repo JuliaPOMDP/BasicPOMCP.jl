@@ -112,16 +112,16 @@ end
 
 struct POMCPTree{A,O}
     # for each observation-terminated history
-    total_n::Vector{Int}
-    children::Vector{Vector{Int}}
-    o_labels::Vector{O}
+    total_n::Vector{Int}                 # total number of visits for an observation node
+    children::Vector{Vector{Int}}        # indices of each of the children
+    o_labels::Vector{O}                  # actual observation corresponding to this observation node
 
-    o_lookup::Dict{Tuple{Int, O}, Int}
+    o_lookup::Dict{Tuple{Int, O}, Int}   # mapping from (action node index, observation) to an observation node index
 
     # for each action-terminated history
-    n::Vector{Int}
-    v::Vector{Float64}
-    a_labels::Vector{A}
+    n::Vector{Int}                       # number of visits for an action node
+    v::Vector{Float64}                   # value estimate for an action node
+    a_labels::Vector{A}                  # actual action corresponding to this action node
 end
 
 function POMCPTree(pomdp::POMDP, sz::Int=1000)
