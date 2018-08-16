@@ -1,4 +1,3 @@
-__precompile__()
 
 module BasicPOMCP
 
@@ -12,13 +11,17 @@ Current constraints:
 
 using POMDPs
 using Parameters
-using POMDPToolbox
 using ParticleFilters
+using BeliefUpdaters
+using POMDPPolicies
+using POMDPSimulators
 using CPUTime
 using Colors
+using Random
+using Printf
 
 import POMDPs: action, solve, updater, requirements_info
-import POMDPToolbox: action_info
+import POMDPModelTools: action_info
 
 using MCTS
 import MCTS: convert_estimator, estimate_value, node_tag, tooltip_tag, default_action
@@ -106,7 +109,7 @@ Partially Observable Monte Carlo Planning Solver.
     max_time::Float64       = Inf
     tree_in_info::Bool      = false
     default_action::Any     = ExceptionRethrow()
-    rng::AbstractRNG        = Base.GLOBAL_RNG
+    rng::AbstractRNG        = Random.GLOBAL_RNG
     estimate_value::Any     = RolloutEstimator(RandomSolver(rng))
 end
 
@@ -125,13 +128,13 @@ struct POMCPTree{A,O}
 end
 
 function POMCPTree(pomdp::POMDP, sz::Int=1000)
-    acts = collect(iterator(actions(pomdp)))
-    A = action_type(pomdp)
-    O = obs_type(pomdp)
+    acts = collect(actions(pomdp))
+    A = actiontype(pomdp)
+    O = obstype(pomdp)
     sz = min(100_000, sz)
     return POMCPTree{A,O}(sizehint!(Int[0], sz),
                           sizehint!(Vector{Int}[collect(1:length(acts))], sz),
-                          sizehint!(Array{O}(1), sz),
+                          sizehint!(Array{O}(undef, 1), sz),
 
                           sizehint!(Dict{Tuple{Int,O},Int}(), sz),
 
@@ -147,7 +150,7 @@ function insert_obs_node!(t::POMCPTree, pomdp::POMDP, ha::Int, o)
     push!(t.o_labels, o)
     hao = length(t.total_n)
     t.o_lookup[(ha, o)] = hao
-    for a in iterator(actions(pomdp))
+    for a in actions(pomdp)
         n = insert_action_node!(t, hao, a)
         push!(t.children[hao], n)
     end
@@ -174,22 +177,22 @@ mutable struct POMCPPlanner{P, SE, RNG} <: Policy
     solved_estimator::SE
     rng::RNG
     _best_node_mem::Vector{Int}
-    _tree::Nullable
+    _tree::Union{Nothing, Any}
 end
 
 function POMCPPlanner(solver::POMCPSolver, pomdp::POMDP)
     se = convert_estimator(solver.estimate_value, solver, pomdp)
-    return POMCPPlanner(solver, pomdp, se, solver.rng, Int[], Nullable())
+    return POMCPPlanner(solver, pomdp, se, solver.rng, Int[], nothing)
 end
 
-Base.srand(p::POMCPPlanner, seed) = srand(p.rng, seed)
+Random.seed!(p::POMCPPlanner, seed) = Random.seed!(p.rng, seed)
 
 
 function updater(p::POMCPPlanner)
     P = typeof(p.problem)
-    S = state_type(P)
-    A = action_type(P)
-    O = obs_type(P)
+    S = statetype(P)
+    A = actiontype(P)
+    O = obstype(P)
     if !@implemented ParticleFilters.obs_weight(::P, ::S, ::A, ::S, ::O)
         return UnweightedParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
     end

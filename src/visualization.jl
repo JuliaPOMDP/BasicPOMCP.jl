@@ -1,5 +1,5 @@
 function D3Trees.D3Tree(p::POMCPPlanner; title="POMCP Tree", kwargs...)
-    warn("""
+    @warn("""
          D3Tree(planner::POMCPPlanner) is deprecated and may be removed in the future. Instead, please use
              
              a, info = action_info(planner, b)
@@ -10,18 +10,18 @@ function D3Trees.D3Tree(p::POMCPPlanner; title="POMCP Tree", kwargs...)
              info = first(ainfo_hist(hist))
              D3Tree(info[:tree])
          """)
-    if isnull(p._tree)
+    if p._tree == nothing
         error("POMCPPlanner has not constructed a tree yet, run `action(planner, belief)` first to construct the tree.")
     end
-    return D3Tree(get(p._tree); title=title, kwargs...)
+    return D3Tree(p._tree; title=title, kwargs...)
 end
 
 function D3Trees.D3Tree(t::POMCPTree; title="POMCP Tree", kwargs...)
     lenb = length(t.total_n)
     lenba = length(t.n)
     len = lenb + lenba
-    children = Vector{Vector{Int}}(len)
-    text = Vector{String}(len)
+    children = Vector{Vector{Int}}(undef, len)
+    text = Vector{String}(undef, len)
     tt = fill("", len)
     link_style = fill("", len)
     style = fill("", len)
