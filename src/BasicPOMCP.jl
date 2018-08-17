@@ -100,7 +100,7 @@ Partially Observable Monte Carlo Planning Solver.
 
 - `rng::AbstractRNG`
     Random number generator.
-    default: `Base.GLOBAL_RNG`
+    default: `Random.GLOBAL_RNG`
 """
 @with_kw mutable struct POMCPSolver <: AbstractPOMCPSolver
     max_depth::Int          = 20

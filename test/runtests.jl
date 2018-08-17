@@ -7,8 +7,9 @@ using D3Trees
 using Random
 using POMDPSimulators
 using POMDPModelTools
+using POMDPTesting
 
-#test_solver(POMCPSolver(), BabyPOMDP())
+test_solver(POMCPSolver(), BabyPOMDP())
 
 pomdp = BabyPOMDP()
 solver = POMCPSolver(rng = MersenneTwister(1))
@@ -26,7 +27,9 @@ solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng = MersenneTwis
 planner = solve(solver, pomdp)
 action_info(planner, initialstate_distribution(pomdp))
 println("time below should be about 0.1 seconds")
-@time a, info = action_info(planner, initialstate_distribution(pomdp))
+etime = @elapsed a, info = action_info(planner, initialstate_distribution(pomdp))
+@show etime
+@test etime < 0.2 
 @show info[:search_time_us]
 
 solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng = MersenneTwister(1))
@@ -46,28 +49,32 @@ a, info = action_info(planner, initialstate_distribution(pomdp))
 d3t = D3Tree(info[:tree], title="test tree (tree_in_info solver option)")
 
 # FIXME
-#@nbinclude(joinpath(dirname(@__FILE__), "..", "notebooks", "Minimal_Example.ipynb"))
+@nbinclude(joinpath(dirname(@__FILE__), "..", "notebooks", "Minimal_Example.ipynb"))
 
 #d3t = D3Tree(planner, title="test")
 # inchrome(d3t)
 
-# test consistency when rng is specified
-pomdp = BabyPOMDP()
-solver = POMCPSolver(rng = MersenneTwister(1))
-planner = solve(solver, pomdp)
-hist1 = simulate(HistoryRecorder(max_steps=1000, rng=MersenneTwister(3)), pomdp, planner)
+@testset "consistency" begin
+    # test consistency when rng is specified
+    pomdp = BabyPOMDP()
+    solver = POMCPSolver(rng = MersenneTwister(1))
+    planner = solve(solver, pomdp)
+    hist1 = simulate(HistoryRecorder(max_steps=1000, rng=MersenneTwister(3)), pomdp, planner)
 
-solver = POMCPSolver(rng = MersenneTwister(1))
-planner = solve(solver, pomdp)
-hist2 = simulate(HistoryRecorder(max_steps=1000, rng=MersenneTwister(3)), pomdp, planner)
+    solver = POMCPSolver(rng = MersenneTwister(1))
+    planner = solve(solver, pomdp)
+    hist2 = simulate(HistoryRecorder(max_steps=1000, rng=MersenneTwister(3)), pomdp, planner)
 
-@test discounted_reward(hist1) == discounted_reward(hist2)
+    @test discounted_reward(hist1) == discounted_reward(hist2)
+end
 
-# REQUIREMENTS
-solver = POMCPSolver()
-pomdp = TigerPOMDP()
+@testset "requires" begin
+    # REQUIREMENTS
+    solver = POMCPSolver()
+    pomdp = TigerPOMDP()
 
-println("============== @requirements_info with only solver:")
-@requirements_info solver
-println("============== @requirements_info with solver and pomdp:")
-@requirements_info solver pomdp
+    println("============== @requirements_info with only solver:")
+    @requirements_info solver
+    println("============== @requirements_info with solver and pomdp:")
+    @requirements_info solver pomdp
+end
