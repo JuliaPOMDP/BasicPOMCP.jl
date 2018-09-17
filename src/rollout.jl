@@ -76,38 +76,30 @@ Perform a rollout simulation to estimate the value.
 """
 function rollout(est::SolvedPORollout, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int)
     b = extract_belief(est.updater, h)
-    sim = POMDPToolbox.RolloutSimulator(est.rng,
-                                        Nullable{Any}(start_state),
-                                        Nullable{Float64}(),
-                                        Nullable{Int}(steps))
+    sim = RolloutSimulator(est.rng,
+                           steps)
     return POMDPs.simulate(sim, pomdp, est.policy, est.updater, b, start_state)
 end
 
 @POMDP_require rollout(est::SolvedPORollout, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int) begin
     @req extract_belief(::typeof(est.updater), ::typeof(h))
     b = extract_belief(est.updater, h)
-    sim = POMDPToolbox.RolloutSimulator(est.rng,
-                                        Nullable{Any}(start_state),
-                                        Nullable{Float64}(),
-                                        Nullable{Int}(steps))
+    sim = RolloutSimulator(est.rng,
+                           steps)
     @subreq POMDPs.simulate(sim, pomdp, est.policy, est.updater, b, start_state)
 end
 
 
 function rollout(est::SolvedFORollout, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int)
     sim = POMDPToolbox.RolloutSimulator(est.rng,
-                                        Nullable{Any}(start_state),
-                                        Nullable{Float64}(),
-                                        Nullable{Int}(steps))
+                                        steps)
     return POMDPToolbox.simulate(sim, pomdp, est.policy, start_state)
 end
 
 @POMDP_require rollout(est::SolvedFORollout, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int) begin
     sim = POMDPToolbox.RolloutSimulator(est.rng,
-                                        Nullable{Any}(start_state),
-                                        Nullable{Float64}(),
-                                        Nullable{Int}(steps))
-    @subreq POMDPToolbox.simulate(sim, pomdp, est.policy, start_state)
+                                        steps)
+    @subreq simulate(sim, pomdp, est.policy, start_state)
 end
 
 
@@ -122,19 +114,12 @@ When a rollout simulation is started, this function is used to create the initia
 function extract_belief end
 
 # some defaults are provided
-extract_belief(::POMDPToolbox.VoidUpdater, node::BeliefNode) = nothing
+extract_belief(::NothingUpdater, node::BeliefNode) = nothing
 
-function extract_belief{O}(::POMDPToolbox.PreviousObservationUpdater{O}, node::BeliefNode)
+function extract_belief(::PreviousObservationUpdater, node::BeliefNode)
     if node.node==1 && !isdefined(node.tree.o_labels, node.node)
-        Nullable{O}()
+        missing
     else
-        Nullable{O}(node.tree.o_labels[node.node])
+        node.tree.o_labels[node.node]
     end
-end
-
-function extract_belief{O}(::POMDPToolbox.FastPreviousObservationUpdater{O}, node::BeliefNode)
-    if node.node==1 && !isdefined(node.tree.o_labels)
-        error("Observation not available from a root node.")
-    end
-    return node.tree.o_labels[node.node]
 end

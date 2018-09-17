@@ -41,7 +41,7 @@ if !isdefined(MCTS, :default_action)
     function default_action(r::ReportWhenUsed, pomdp, belief, ex)
         showerror(STDERR, ex)
         a = default_action(r.a, pomdp, belief, ex)
-        warn("Using default action $a")
+        @warn("Using default action $a")
         return a
     end
 end

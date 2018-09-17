@@ -18,25 +18,20 @@ This package replaces the deprecated [POMCP.jl package](https://github.com/Julia
 
 ## Installation
 
-Using POMDPs.jl
+In Julia 1.0 and higher, BasicPOMCP is available on the JuliaPOMDP registry (and this registry is required to automatically get the MCTS dependency):
 
 ```julia
+using Pkg
 Pkg.add("POMDPs")
-import POMDPs
-POMDPs.add("BasicPOMCP")
-```
-
-OR
-
-```julia
-Pkg.clone("https://github.com/juliapomdp/BasicPOMCP.jl.git")
-Pkg.build("BasicPOMCP")
+using POMDPs
+POMDPs.add_registry()
+Pkg.add("BasicPOMCP")
 ```
 
 ## Usage
 
 ```julia
-using POMDPs, POMDPModels, POMDPToolbox, BasicPOMCP
+using POMDPs, POMDPModels, POMDPSimulators, BasicPOMCP
 
 pomdp = TigerPOMDP()
 
@@ -112,15 +107,17 @@ Instead, a custom belief updater, or an updater from [ParticleFilters.jl](https:
 The search tree can be visualized with [D3Trees.jl](https://github.com/sisl/D3Trees.jl) after running the `action_info()` as in the example below. **Note: tree_in_info must be set to true either as a solver option or as a keyword argument to action_info() for this to work** (it is disabled by default because it can use a lot of memory).
 
 ```julia
+using POMDPs
 using BasicPOMCP
 using POMDPModels
-using POMDPToolbox
+using POMDPModelTools
 using D3Trees
+using Random
 
 pomdp = BabyPOMDP()
 solver = POMCPSolver(tree_queries=1000, c=10.0, rng=MersenneTwister(1))
 planner = solve(solver, pomdp)
-a, info = action_info(planner, initial_state_distribution(pomdp), tree_in_info=true)
+a, info = action_info(planner, initialstate_distribution(pomdp), tree_in_info=true)
 
 inchrome(D3Tree(info[:tree], init_expand=3))
 ```
