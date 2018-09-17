@@ -118,15 +118,8 @@ extract_belief(::NothingUpdater, node::BeliefNode) = nothing
 
 function extract_belief(::PreviousObservationUpdater, node::BeliefNode)
     if node.node==1 && !isdefined(node.tree.o_labels, node.node)
-        nothing
+        missing
     else
         node.tree.o_labels[node.node]
     end
 end
-
-# function extract_belief(::FastPreviousObservationUpdater{O}, node::BeliefNode) where {O}
-#     if node.node==1 && !isdefined(node.tree.o_labels)
-#         error("Observation not available from a root node.")
-#     end
-#     return node.tree.o_labels[node.node]
-# end

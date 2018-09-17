@@ -25,7 +25,8 @@ simulate(sim, pomdp, planner, updater(pomdp))
 
 solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng = MersenneTwister(1))
 planner = solve(solver, pomdp)
-action_info(planner, initialstate_distribution(pomdp))
+a, info = action_info(planner, initialstate_distribution(pomdp))
+a, info = action_info(planner, initialstate_distribution(pomdp))
 println("time below should be about 0.1 seconds")
 etime = @elapsed a, info = action_info(planner, initialstate_distribution(pomdp))
 @show etime
@@ -48,7 +49,6 @@ a, info = action_info(planner, initialstate_distribution(pomdp))
 
 d3t = D3Tree(info[:tree], title="test tree (tree_in_info solver option)")
 
-# FIXME
 @nbinclude(joinpath(dirname(@__FILE__), "..", "notebooks", "Minimal_Example.ipynb"))
 
 #d3t = D3Tree(planner, title="test")
