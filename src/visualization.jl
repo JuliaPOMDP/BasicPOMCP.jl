@@ -5,7 +5,7 @@ function D3Trees.D3Tree(p::POMCPPlanner; title="POMCP Tree", kwargs...)
              a, info = action_info(planner, b)
              D3Tree(info[:tree])
 
-         Or, you can get this info from a POMDPToolbox History
+         Or, you can get this info from a POMDPSimulators History
          
              info = first(ainfo_hist(hist))
              D3Tree(info[:tree])
