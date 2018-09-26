@@ -99,7 +99,7 @@ end
 @POMDP_require rollout(est::SolvedFORollout, pomdp::POMDPs.POMDP, start_state, h::BeliefNode, steps::Int) begin
     sim = RolloutSimulator(est.rng,
                                         steps)
-    @subreq POMDPssimulate(sim, pomdp, est.policy, start_state)
+    @subreq POMDPs.simulate(sim, pomdp, est.policy, start_state)
 end
 
 
