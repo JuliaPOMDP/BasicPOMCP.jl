@@ -17,15 +17,14 @@ function POMDPs.requirements_info(solver::AbstractPOMCPSolver, problem::POMDP, b
 end
 
 function POMDPs.requirements_info(policy::POMCPPlanner, b)
-    @show_requirements action(policy, b)    
+    @show_requirements action(policy, b)
 
     problem = policy.problem
     rng = MersenneTwister(1)
     if @implemented(rand(::typeof(rng), ::typeof(b))) &&
-        @implemented(actions(::typeof(problem)))
-        # TODO require actions(::POMDP , :::POMCPObsNode)
+        @implemented(actions(::typeof(problem), ::typeof(b)))
         s = rand(rng, b)
-        a = first(actions(problem))
+        a = first(actions(problem, b))
         if @implemented generate_sor(::typeof(policy.problem), ::typeof(s), ::typeof(a), ::typeof(rng))
             sp, o, r = generate_sor(policy.problem, s, a, rng)
 
@@ -74,8 +73,8 @@ end
     @req hash(::O)
     # from insert_obs_node!
     @req n_actions(::P)
-    @req actions(::P)
-    AS = typeof(actions(p.problem))
+    @req actions(::P, ::typeof(hnode))
+    AS = typeof(actions(p.problem, hnode))
     @subreq estimate_value(p.solved_estimator, p.problem, s, hnode, steps)
     @req discount(::P)
 end

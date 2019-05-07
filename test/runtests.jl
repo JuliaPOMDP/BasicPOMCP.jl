@@ -15,7 +15,7 @@ pomdp = BabyPOMDP()
 solver = POMCPSolver(rng = MersenneTwister(1))
 planner = solve(solver, pomdp)
 
-tree = BasicPOMCP.POMCPTree(pomdp, solver.tree_queries)
+tree = BasicPOMCP.POMCPTree(pomdp, initialstate_distribution(pomdp), solver.tree_queries)
 node = BasicPOMCP.POMCPObsNode(tree, 1)
 
 r = @inferred BasicPOMCP.simulate(planner, initialstate(pomdp, MersenneTwister(1)), node, 20)
@@ -30,7 +30,7 @@ a, info = action_info(planner, initialstate_distribution(pomdp))
 println("time below should be about 0.1 seconds")
 etime = @elapsed a, info = action_info(planner, initialstate_distribution(pomdp))
 @show etime
-@test etime < 0.2 
+@test etime < 0.2
 @show info[:search_time_us]
 
 solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng = MersenneTwister(1))
