@@ -23,6 +23,7 @@ function POMDPs.requirements_info(policy::POMCPPlanner, b)
     rng = MersenneTwister(1)
     if @implemented(rand(::typeof(rng), ::typeof(b))) &&
         @implemented(actions(::typeof(problem)))
+        # TODO require actions(::POMDP , :::POMCPObsNode)
         s = rand(rng, b)
         a = first(actions(problem))
         if @implemented generate_sor(::typeof(policy.problem), ::typeof(s), ::typeof(a), ::typeof(rng))

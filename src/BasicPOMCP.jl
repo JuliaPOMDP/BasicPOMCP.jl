@@ -43,6 +43,10 @@ export
     default_action,
 
     BeliefNode,
+    POMCPObsNode,
+    isroot,
+    current_obs,
+
     AbstractPOMCPSolver,
 
     PORollout,
@@ -127,8 +131,8 @@ struct POMCPTree{A,O}
     a_labels::Vector{A}                  # actual action corresponding to this action node
 end
 
-function POMCPTree(pomdp::POMDP, sz::Int=1000)
-    acts = collect(actions(pomdp))
+function POMCPTree(pomdp::POMDP, b0, sz::Int=1000)
+    acts = collect(actions(pomdp, b0))
     A = actiontype(pomdp)
     O = obstype(pomdp)
     sz = min(100_000, sz)
@@ -142,7 +146,7 @@ function POMCPTree(pomdp::POMDP, sz::Int=1000)
                           sizehint!(zeros(Float64, length(acts)), sz),
                           sizehint!(acts, sz)
                          )
-end    
+end
 
 function insert_obs_node!(t::POMCPTree, pomdp::POMDP, ha::Int, o)
     push!(t.total_n, 0)
@@ -150,7 +154,8 @@ function insert_obs_node!(t::POMCPTree, pomdp::POMDP, ha::Int, o)
     push!(t.o_labels, o)
     hao = length(t.total_n)
     t.o_lookup[(ha, o)] = hao
-    for a in actions(pomdp)
+    o_node = POMCPObsNode(t, hao)
+    for a in actions(pomdp, o_node)
         n = insert_action_node!(t, hao, a)
         push!(t.children[hao], n)
     end
@@ -169,6 +174,15 @@ abstract type BeliefNode <: AbstractStateNode end
 struct POMCPObsNode{A,O} <: BeliefNode
     tree::POMCPTree{A,O}
     node::Int
+end
+
+isroot(h::POMCPObsNode) = h.node==1
+function current_obs(h::POMCPObsNode)
+    if isroot(h)
+        error("Tried to access the observation for the root node in a POMCPOW tree")
+    else
+        return h.tree.o_labels[h.node]
+    end
 end
 
 mutable struct POMCPPlanner{P, SE, RNG} <: Policy
@@ -198,17 +212,6 @@ function updater(p::POMCPPlanner)
     end
     return SIRParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
 end
-
-# TODO (maybe): implement this for history-dependent policies
-#=
-immutable AOHistory
-    tree::POMCPTree
-    tail::Int
-end
-
-length
-getindex
-=#
 
 include("solver.jl")
 
