@@ -16,39 +16,7 @@ function POMDPs.requirements_info(solver::AbstractPOMCPSolver, problem::POMDP, b
     requirements_info(policy, b)
 end
 
-function POMDPs.requirements_info(policy::POMCPPlanner, b)
-    @show_requirements action(policy, b)    
-
-    problem = policy.problem
-    rng = MersenneTwister(1)
-    if @implemented(rand(::typeof(rng), ::typeof(b))) &&
-        @implemented(actions(::typeof(problem)))
-        s = rand(rng, b)
-        a = first(actions(problem))
-        if @implemented generate_sor(::typeof(policy.problem), ::typeof(s), ::typeof(a), ::typeof(rng))
-            sp, o, r = generate_sor(policy.problem, s, a, rng)
-
-            if !isequal(deepcopy(o), o)
-                @warn("""
-                     isequal(deepcopy(o), o) returned false. Is isequal() defined correctly?
-
-                     For POMCP to work correctly, you must define isequal(::$(typeof(o)), ::$(typeof(o))) (see https://docs.julialang.org/en/stable/stdlib/collections/#Associative-Collections-1, https://github.com/andrewcooke/AutoHashEquals.jl#background, also consider using StaticArrays). This warning was thrown because isequal($(deepcopy(o)), $o) returned false.
-
-                     Note: isequal() should also be defined correctly for actions, but no warning will be issued.
-                     """)
-            end
-            if hash(deepcopy(o)) != hash(o)
-                @warn("""
-                     hash(deepcopy(o)) was not equal to hash(o). Is hash() defined correctly?
-
-                     For MCTS to work correctly, you must define hash(::$(typeof(o)), ::UInt) (see https://docs.julialang.org/en/stable/stdlib/collections/#Associative-Collections-1, https://github.com/andrewcooke/AutoHashEquals.jl#background, also consider using StaticArrays). This warning was thrown because hash($(deepcopy(o))) != hash($o).
-
-                     Note: hash() should also be defined correctly for actions, but no warning will be issued.
-                     """)
-            end
-        end
-    end
-end
+POMDPs.requirements_info(policy::POMCPPlanner, b) = @show_requirements action(policy, b)
 
 @POMDP_require action(p::POMCPPlanner, b) begin
     tree = POMCPTree(p.problem, p.solver.tree_queries)
@@ -68,13 +36,13 @@ end
     S = statetype(P)
     A = actiontype(P)
     O = obstype(P)
-    @req generate_sor(::P, ::S, ::A, ::typeof(p.rng))
+    @req gen(::DDNOut{(:sp, :o, :r)}, ::P, ::S, ::A, ::typeof(p.rng))
     @req isequal(::O, ::O)
     @req hash(::O)
     # from insert_obs_node!
-    @req n_actions(::P)
     @req actions(::P)
     AS = typeof(actions(p.problem))
+    @req length(::AS)
     @subreq estimate_value(p.solved_estimator, p.problem, s, hnode, steps)
     @req discount(::P)
 end

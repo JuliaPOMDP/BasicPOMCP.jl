@@ -87,7 +87,7 @@ function simulate(p::POMCPPlanner, s, hnode::POMCPObsNode, steps::Int)
     ha = rand(p.rng, best_nodes)
     a = t.a_labels[ha]
 
-    sp, o, r = generate_sor(p.problem, s, a, p.rng)
+    sp, o, r = gen(DDNOut(:sp, :o, :r), p.problem, s, a, p.rng)
 
     hao = get(t.o_lookup, (ha, o), 0)
     if hao == 0
