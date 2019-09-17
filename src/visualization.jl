@@ -1,12 +1,12 @@
 function D3Trees.D3Tree(p::POMCPPlanner; title="POMCP Tree", kwargs...)
     @warn("""
          D3Tree(planner::POMCPPlanner) is deprecated and may be removed in the future. Instead, please use
-             
+
              a, info = action_info(planner, b)
              D3Tree(info[:tree])
 
          Or, you can get this info from a POMDPSimulators History
-         
+
              info = first(ainfo_hist(hist))
              D3Tree(info[:tree])
          """)

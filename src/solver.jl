@@ -60,7 +60,7 @@ function simulate(p::POMCPPlanner, s, hnode::POMCPObsNode, steps::Int)
     if steps == 0 || isterminal(p.problem, s)
         return 0.0
     end
-    
+
     t = hnode.tree
     h = hnode.node
 
