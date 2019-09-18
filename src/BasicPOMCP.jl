@@ -146,7 +146,7 @@ end
 
 function insert_obs_node!(t::POMCPTree, pomdp::POMDP, ha::Int, o)
     push!(t.total_n, 0)
-    push!(t.children, sizehint!(Int[], n_actions(pomdp)))
+    push!(t.children, sizehint!(Int[], length(actions(pomdp))))
     push!(t.o_labels, o)
     hao = length(t.total_n)
     t.o_lookup[(ha, o)] = hao
