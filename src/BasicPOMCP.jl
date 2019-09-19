@@ -145,12 +145,13 @@ function POMCPTree(pomdp::POMDP, sz::Int=1000)
 end
 
 function insert_obs_node!(t::POMCPTree, pomdp::POMDP, ha::Int, o)
+    acts = actions(pomdp)
     push!(t.total_n, 0)
-    push!(t.children, sizehint!(Int[], length(actions(pomdp))))
+    push!(t.children, sizehint!(Int[], length(acts)))
     push!(t.o_labels, o)
     hao = length(t.total_n)
     t.o_lookup[(ha, o)] = hao
-    for a in actions(pomdp)
+    for a in acts
         n = insert_action_node!(t, hao, a)
         push!(t.children[hao], n)
     end
