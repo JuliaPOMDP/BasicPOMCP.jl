@@ -2,7 +2,7 @@ function action_info(p::POMCPPlanner, b; tree_in_info=false)
     local a::actiontype(p.problem)
     info = Dict{Symbol, Any}()
     try
-        tree = POMCPTree(p.problem, p.solver.tree_queries)
+        tree = POMCPTree(p.problem, b, p.solver.tree_queries)
         a = search(p, b, tree, info)
         p._tree = tree
         if p.solver.tree_in_info || tree_in_info

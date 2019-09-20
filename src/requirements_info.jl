@@ -19,7 +19,7 @@ end
 POMDPs.requirements_info(policy::POMCPPlanner, b) = @show_requirements action(policy, b)
 
 @POMDP_require action(p::POMCPPlanner, b) begin
-    tree = POMCPTree(p.problem, p.solver.tree_queries)
+    tree = POMCPTree(p.problem, b, p.solver.tree_queries)
     @subreq search(p, b, tree)
 end
 

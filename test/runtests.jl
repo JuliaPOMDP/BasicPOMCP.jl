@@ -14,8 +14,9 @@ test_solver(POMCPSolver(), BabyPOMDP())
 pomdp = BabyPOMDP()
 solver = POMCPSolver(rng = MersenneTwister(1))
 planner = solve(solver, pomdp)
+b = initialstate_distribution(pomdp)
 
-tree = BasicPOMCP.POMCPTree(pomdp, solver.tree_queries)
+tree = BasicPOMCP.POMCPTree(pomdp, b, solver.tree_queries)
 node = BasicPOMCP.POMCPObsNode(tree, 1)
 
 r = @inferred BasicPOMCP.simulate(planner, initialstate(pomdp, MersenneTwister(1)), node, 20)
@@ -25,17 +26,16 @@ simulate(sim, pomdp, planner, updater(pomdp))
 
 solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng = MersenneTwister(1))
 planner = solve(solver, pomdp)
-a, info = action_info(planner, initialstate_distribution(pomdp))
-a, info = action_info(planner, initialstate_distribution(pomdp))
+a, info = action_info(planner, b)
 println("time below should be about 0.1 seconds")
-etime = @elapsed a, info = action_info(planner, initialstate_distribution(pomdp))
+etime = @elapsed a, info = action_info(planner, b)
 @show etime
 @test etime < 0.2
 @show info[:search_time_us]
 
 solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng = MersenneTwister(1))
 planner = solve(solver, pomdp)
-a, info = action_info(planner, initialstate_distribution(pomdp), tree_in_info=true)
+a, info = action_info(planner, b, tree_in_info=true)
 
 #d3t = D3Tree(planner, title="test")
 d3t = D3Tree(info[:tree], title="test tree")
@@ -45,7 +45,7 @@ show(stdout, MIME("text/plain"), d3t)
 
 solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng=MersenneTwister(1), tree_in_info=true)
 planner = solve(solver, pomdp)
-a, info = action_info(planner, initialstate_distribution(pomdp))
+a, info = action_info(planner, b)
 
 d3t = D3Tree(info[:tree], title="test tree (tree_in_info solver option)")
 
