@@ -43,6 +43,7 @@ export
     default_action,
 
     BeliefNode,
+    AOHistoryBelief,
     AbstractPOMCPSolver,
 
     PORollout,
@@ -127,8 +128,8 @@ struct POMCPTree{A,O}
     a_labels::Vector{A}                  # actual action corresponding to this action node
 end
 
-function POMCPTree(pomdp::POMDP, sz::Int=1000)
-    acts = collect(actions(pomdp))
+function POMCPTree(pomdp::POMDP, b, sz::Int=1000)
+    acts = collect(actions(pomdp, b))
     A = actiontype(pomdp)
     O = obstype(pomdp)
     sz = min(100_000, sz)
@@ -144,8 +145,14 @@ function POMCPTree(pomdp::POMDP, sz::Int=1000)
                          )
 end
 
+struct AOHistoryBelief{H<:NTuple{<:Any, <:NamedTuple{(:a, :o)}}}
+    hist::H
+end
+POMDPs.currentobs(h::AOHistoryBelief) = h.hist[end].o
+POMDPs.history(h::AOHistoryBelief) = h.hist
+
 function insert_obs_node!(t::POMCPTree, pomdp::POMDP, ha::Int, o)
-    acts = actions(pomdp)
+    acts = actions(pomdp, AOHistoryBelief(tuple((a=t.a_labels[ha], o=o))))
     push!(t.total_n, 0)
     push!(t.children, sizehint!(Int[], length(acts)))
     push!(t.o_labels, o)
@@ -199,17 +206,6 @@ function updater(p::POMCPPlanner)
     end
     return SIRParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
 end
-
-# TODO (maybe): implement this for history-dependent policies
-#=
-immutable AOHistory
-    tree::POMCPTree
-    tail::Int
-end
-
-length
-getindex
-=#
 
 include("solver.jl")
 
