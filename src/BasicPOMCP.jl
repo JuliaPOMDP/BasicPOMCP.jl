@@ -43,6 +43,7 @@ export
     default_action,
 
     BeliefNode,
+    AOHistoryBelief,
     AbstractPOMCPSolver,
 
     PORollout,
@@ -147,8 +148,8 @@ end
 struct AOHistoryBelief{H<:NTuple{<:Any, <:NamedTuple{(:a, :o)}}}
     hist::H
 end
-POMDPs.currentobs(h::AOHistoryBelief) = h.hist.o
-POMDPs.history(h::AOHistoryBelief) = h
+POMDPs.currentobs(h::AOHistoryBelief) = h.hist[end].o
+POMDPs.history(h::AOHistoryBelief) = h.hist
 
 function insert_obs_node!(t::POMCPTree, pomdp::POMDP, ha::Int, o)
     acts = actions(pomdp, AOHistoryBelief(tuple((a=t.a_labels[ha], o=o))))
