@@ -4,11 +4,9 @@
 [![Coverage Status](https://coveralls.io/repos/JuliaPOMDP/BasicPOMCP.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/JuliaPOMDP/BasicPOMCP.jl?branch=master)
 [![codecov.io](http://codecov.io/github/JuliaPOMDP/BasicPOMCP.jl/coverage.svg?branch=master)](http://codecov.io/github/JuliaPOMDP/BasicPOMCP.jl?branch=master)
 
-The Partially Observable Monte Carlo Planning (POMCP) online solver for [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl).
+This package implements the PO-UCT online tree search algorithm for [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl). PO-UCT is the most useful component of the POMCP algorithm described in \[1\]. The other component of POMCP, re-use of particles in the tree for belief updates, is not implemented for reasons described in [Belief Updates](#belief-updates).
 
-Described in
-
-> Silver, D., & Veness, J. (2010). Monte-Carlo Planning in Large POMDPs. In *Advances in neural information processing systems* (pp. 2164–2172). Retrieved from http://discovery.ucl.ac.uk/1347369/
+> \[1\] Silver, D., & Veness, J. (2010). Monte-Carlo Planning in Large POMDPs. In *Advances in neural information processing systems* (pp. 2164–2172). Retrieved from http://discovery.ucl.ac.uk/1347369/
 
 Problems should be specified using the [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl) interface. For more information, see the [POMDPs.jl documentation](http://juliapomdp.github.io/POMDPs.jl/latest/).
 
