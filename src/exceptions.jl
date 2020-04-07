@@ -1,5 +1,5 @@
 abstract type NoDecision <: Exception end
-Base.show(io::IO, nd::NoDecision) = print(io, """
+Base.showerror(io::IO, nd::NoDecision) = print(io, """
     Planner failed to choose an action because the following exception was thrown:
     $nd
 
@@ -9,7 +9,7 @@ Base.show(io::IO, nd::NoDecision) = print(io, """
 struct AllSamplesTerminal <: NoDecision
     belief
 end
-Base.show(io::IO, ast::AllSamplesTerminal) = print(io, """
+Base.showerror(io::IO, ast::AllSamplesTerminal) = print(io, """
     Planner failed to choose an action because all states sampled from the belief were terminal.
 
     To see the belief, catch this exception as ex and see ex.belief.

@@ -131,3 +131,27 @@ end;
     println("============== @requirements_info with solver and pomdp:")
     @requirements_info solver pomdp
 end;
+
+@testset "errors" begin
+    struct TerminalPOMDP <: POMDP{Int, Int, Int} end
+    POMDPs.isterminal(::TerminalPOMDP, s) = true
+    POMDPs.actions(::TerminalPOMDP) = [1,2,3]
+
+    solver = POMCPSolver()
+    planner = solve(solver, TerminalPOMDP())
+    @test_throws AllSamplesTerminal action(planner, Deterministic(1))
+    let ex = nothing
+        try
+            action(planner, Deterministic(1))
+        catch ex
+        end
+
+        @test sprint(showerror, ex) == """
+        Planner failed to choose an action because all states sampled from the belief were terminal.
+
+        To see the belief, catch this exception as ex and see ex.belief.
+
+        To specify an action for this case, use the default_action solver parameter.
+        """
+    end
+end
