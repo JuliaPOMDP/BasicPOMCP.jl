@@ -21,8 +21,9 @@ using Random
 using Printf
 using POMDPLinter: @POMDP_require, @show_requirements
 
-import POMDPs: action, solve, updater, requirements_info
+import POMDPs: action, solve, updater
 import POMDPModelTools: action_info
+import POMDPLinter
 
 using MCTS
 import MCTS: convert_estimator, estimate_value, node_tag, tooltip_tag, default_action

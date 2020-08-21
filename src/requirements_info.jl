@@ -1,4 +1,4 @@
-function POMDPs.requirements_info(solver::AbstractPOMCPSolver, problem::POMDP)
+function POMDPLinter.requirements_info(solver::AbstractPOMCPSolver, problem::POMDP)
     println("""
     Since POMCP is an online solver, most of the computation occurs in `action(planner, state)`. In order to view the requirements for this function, please, supply an initial beleif to `requirements_info`, e.g.
 
@@ -7,7 +7,7 @@ function POMDPs.requirements_info(solver::AbstractPOMCPSolver, problem::POMDP)
         """)
 end
 
-function POMDPs.requirements_info(solver::AbstractPOMCPSolver, problem::POMDP, b)
+function POMDPLinter.requirements_info(solver::AbstractPOMCPSolver, problem::POMDP, b)
     policy = solve(solver, problem)
     requirements_info(policy, b)
 end

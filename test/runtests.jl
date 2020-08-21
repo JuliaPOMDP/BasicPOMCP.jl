@@ -8,6 +8,7 @@ using Random
 using POMDPSimulators
 using POMDPModelTools
 using POMDPTesting
+using POMDPLinter: @requirements_info, @show_requirements, requirements_info
 
 import POMDPs:
 	transition,
@@ -127,9 +128,10 @@ end;
     pomdp = TigerPOMDP()
 
     println("============== @requirements_info with only solver:")
-    @requirements_info solver
+    requirements_info(solver)
     println("============== @requirements_info with solver and pomdp:")
-    @requirements_info solver pomdp
+    requirements_info(solver, pomdp)
+    @show_requirements POMDPs.solve(solver, pomdp)
 end;
 
 @testset "errors" begin
