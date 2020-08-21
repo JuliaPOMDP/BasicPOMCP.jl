@@ -14,7 +14,7 @@ import POMDPs:
 	observation,
     reward,
     discount,
-	initialstate_distribution,
+	initialstate,
 	updater,
 	states,
 	actions,
@@ -22,7 +22,7 @@ import POMDPs:
 
 struct ConstObsPOMDP <: POMDP{Bool, Symbol, Bool} end
 updater(problem::ConstObsPOMDP) = DiscreteUpdater(problem)
-initialstate_distribution(::ConstObsPOMDP) = BoolDistribution(0.0)
+initialstate(::ConstObsPOMDP) = BoolDistribution(0.0)
 transition(p::ConstObsPOMDP, s::Bool, a::Symbol) = BoolDistribution(0.5)
 observation(p::ConstObsPOMDP, a::Symbol, sp::Bool) = BoolDistribution(1.0)
 reward(p::ConstObsPOMDP, s::Bool, a::Symbol, sp::Bool) = 1.
@@ -40,11 +40,11 @@ end;
 	pomdp = BabyPOMDP()
 	solver = POMCPSolver(rng = MersenneTwister(1))
 	planner = solve(solver, pomdp)
-	b = initialstate_distribution(pomdp)
+	b = initialstate(pomdp)
     tree = BasicPOMCP.POMCPTree(pomdp, b, solver.tree_queries)
     node = BasicPOMCP.POMCPObsNode(tree, 1)
 
-    r = @inferred BasicPOMCP.simulate(planner, initialstate(pomdp, MersenneTwister(1)), node, 20)
+    r = @inferred BasicPOMCP.simulate(planner, rand(MersenneTwister(1), initialstate(pomdp)), node, 20)
 end;
 
 @testset "belief dependent actions" begin
@@ -58,11 +58,11 @@ end;
 
 	solver = POMCPSolver(rng = MersenneTwister(1))
 	planner = solve(solver, pomdp)
-	b = initialstate_distribution(pomdp)
+	b = initialstate(pomdp)
     tree = BasicPOMCP.POMCPTree(pomdp, b, solver.tree_queries)
     node = BasicPOMCP.POMCPObsNode(tree, 1)
 
-    @inferred BasicPOMCP.simulate(planner, initialstate(pomdp, MersenneTwister(1)), node, 20)
+    @inferred BasicPOMCP.simulate(planner, rand(MersenneTwister(1), initialstate(pomdp)), node, 20)
 end;
 
 @testset "simulation" begin
@@ -71,7 +71,7 @@ end;
 	planner = solve(solver, pomdp)
     solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng = MersenneTwister(1))
     planner = solve(solver, pomdp)
-	b = initialstate_distribution(pomdp)
+	b = initialstate(pomdp)
 
     a, info = action_info(planner, b)
     println("time below should be about 0.1 seconds")
@@ -88,7 +88,7 @@ end;
 	pomdp = BabyPOMDP()
     solver = POMCPSolver(max_time=0.1, tree_queries=typemax(Int), rng = MersenneTwister(1))
     planner = solve(solver, pomdp)
-	b = initialstate_distribution(pomdp)
+	b = initialstate(pomdp)
     a, info = action_info(planner, b, tree_in_info=true)
 
     d3t = D3Tree(info[:tree], title="test tree")

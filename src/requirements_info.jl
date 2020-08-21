@@ -1,14 +1,10 @@
 function POMDPs.requirements_info(solver::AbstractPOMCPSolver, problem::POMDP)
-    if @implemented initialstate_distribution(::typeof(problem))
-        return requirements_info(solver, problem, initialstate_distribution(problem))
-    else
-        println("""
-        Since POMCP is an online solver, most of the computation occurs in `action(planner, state)`. In order to view the requirements for this function, please, supply a state as the third argument to `requirements_info`, e.g.
+    println("""
+    Since POMCP is an online solver, most of the computation occurs in `action(planner, state)`. In order to view the requirements for this function, please, supply an initial beleif to `requirements_info`, e.g.
 
-            @requirements_info $(typeof(solver))() $(typeof(problem))() $(statetype(typeof(problem)))()
+            @requirements_info $(typeof(solver))() $(typeof(problem))() initialstate(pomdp)
 
-            """)
-    end
+        """)
 end
 
 function POMDPs.requirements_info(solver::AbstractPOMCPSolver, problem::POMDP, b)
@@ -36,7 +32,7 @@ end
     S = statetype(P)
     A = actiontype(P)
     O = obstype(P)
-    @req gen(::DDNOut{(:sp, :o, :r)}, ::P, ::S, ::A, ::typeof(p.rng))
+    @req gen(::P, ::S, ::A, ::typeof(p.rng))
     @req isequal(::O, ::O)
     @req hash(::O)
     # from insert_obs_node!

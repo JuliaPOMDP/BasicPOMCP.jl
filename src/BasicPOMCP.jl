@@ -19,6 +19,7 @@ using CPUTime
 using Colors
 using Random
 using Printf
+using POMDPLinter: @POMDP_require, @show_requirements
 
 import POMDPs: action, solve, updater, requirements_info
 import POMDPModelTools: action_info
@@ -201,10 +202,12 @@ function updater(p::POMCPPlanner)
     S = statetype(P)
     A = actiontype(P)
     O = obstype(P)
-    if !@implemented ParticleFilters.obs_weight(::P, ::S, ::A, ::S, ::O)
-        return UnweightedParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
-    end
-    return SIRParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
+    return UnweightedParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
+    # XXX It would be better to automatically use an SIRParticleFilter if possible
+    # if !@implemented ParticleFilters.obs_weight(::P, ::S, ::A, ::S, ::O)
+    #     return UnweightedParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
+    # end
+    # return SIRParticleFilter(p.problem, p.solver.tree_queries, rng=p.rng)
 end
 
 include("solver.jl")

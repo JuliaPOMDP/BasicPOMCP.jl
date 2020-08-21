@@ -115,7 +115,7 @@ using Random
 pomdp = BabyPOMDP()
 solver = POMCPSolver(tree_queries=1000, c=10.0, rng=MersenneTwister(1))
 planner = solve(solver, pomdp)
-a, info = action_info(planner, initialstate_distribution(pomdp), tree_in_info=true)
+a, info = action_info(planner, initialstate(pomdp), tree_in_info=true)
 
 inchrome(D3Tree(info[:tree], init_expand=3))
 ```
