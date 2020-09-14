@@ -52,7 +52,7 @@ function D3Trees.D3Tree(t::POMCPTree; title="POMCP Tree", kwargs...)
         children[ba+lenb] = collect(ba_children[ba])
         text[ba+lenb] = @sprintf("""
                                  a: %s
-                                 N: %-7d V: %-10.3g""",
+                                 N: %-7d\nV: %-10.3g""",
                                  node_tag(t.a_labels[ba]), t.n[ba], t.v[ba])
         tt[ba+lenb] = """
                       a: $(tooltip_tag(t.a_labels[ba]))
