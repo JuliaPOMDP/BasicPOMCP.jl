@@ -91,7 +91,7 @@ function simulate(p::POMCPPlanner, s, hnode::POMCPObsNode, steps::Int)
 
     hao = get(t.o_lookup, (ha, o), 0)
     if hao == 0
-        hao = insert_obs_node!(t, p.problem, ha, o)
+        hao = insert_obs_node!(t, p.problem, ha, sp, o)
         v = estimate_value(p.solved_estimator,
                            p.problem,
                            sp,

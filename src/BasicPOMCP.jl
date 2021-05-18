@@ -45,7 +45,7 @@ export
     default_action,
 
     BeliefNode,
-    AOHistoryBelief,
+    LeafNodeBelief,
     AbstractPOMCPSolver,
 
     PORollout,
@@ -55,7 +55,10 @@ export
 
     D3Tree,
     node_tag,
-    tooltip_tag
+    tooltip_tag,
+
+    # deprecated
+    AOHistoryBelief
 
 abstract type AbstractPOMCPSolver <: Solver end
 
@@ -147,14 +150,37 @@ function POMCPTree(pomdp::POMDP, b, sz::Int=1000)
                          )
 end
 
-struct AOHistoryBelief{H<:NTuple{<:Any, <:NamedTuple{(:a, :o)}}}
+struct LeafNodeBelief{H, S} <: AbstractParticleBelief{S}
     hist::H
+    sp::S
 end
-POMDPs.currentobs(h::AOHistoryBelief) = h.hist[end].o
-POMDPs.history(h::AOHistoryBelief) = h.hist
+POMDPs.currentobs(h::LeafNodeBelief) = h.hist[end].o
+POMDPs.history(h::LeafNodeBelief) = h.hist
 
-function insert_obs_node!(t::POMCPTree, pomdp::POMDP, ha::Int, o)
-    acts = actions(pomdp, AOHistoryBelief(tuple((a=t.a_labels[ha], o=o))))
+# particle belief interface
+ParticleFilters.n_particles(b::LeafNodeBelief) = 1
+ParticleFilters.particles(b::LeafNodeBelief) = (b.sp,)
+ParticleFilters.weights(b::LeafNodeBelief) = (1.0,)
+ParticleFilters.weighted_particles(b::LeafNodeBelief) = (b.sp=>1.0,)
+ParticleFilters.weight_sum(b::LeafNodeBelief) = 1.0
+ParticleFilters.weight(b::LeafNodeBelief, i) = i == 1 ? 1.0 : 0.0
+
+function ParticleFilters.particle(b::LeafNodeBelief, i)
+    @assert i == 1
+    return b.sp
+end
+
+POMDPs.mean(b::LeafNodeBelief) = b.sp
+POMDPs.mode(b::LeafNodeBelief) = b.sp
+POMDPs.support(b::LeafNodeBelief) = (b.sp,)
+POMDPs.pdf(b::LeafNodeBelief{<:Any, S}, s::S) where S = float(s == b.sp)
+POMDPs.rand(rng::AbstractRNG, s::Random.SamplerTrivial{<:LeafNodeBelief}) = s[].sp
+
+# old deprecated name
+const AOHistoryBelief = LeafNodeBelief
+
+function insert_obs_node!(t::POMCPTree, pomdp::POMDP, ha::Int, sp, o)
+    acts = actions(pomdp, LeafNodeBelief(tuple((a=t.a_labels[ha], o=o)), sp))
     push!(t.total_n, 0)
     push!(t.children, sizehint!(Int[], length(acts)))
     push!(t.o_labels, o)
