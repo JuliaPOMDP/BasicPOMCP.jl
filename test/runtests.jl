@@ -9,6 +9,7 @@ using POMDPSimulators
 using POMDPModelTools
 using POMDPTesting
 using POMDPLinter: @requirements_info, @show_requirements, requirements_info
+using ParticleFilters: n_particles, particles, particle, weights, weighted_particles, weight_sum, weight
 
 import POMDPs:
 	transition,
@@ -24,7 +25,7 @@ import POMDPs:
 struct ConstObsPOMDP <: POMDP{Bool, Symbol, Bool} end
 updater(problem::ConstObsPOMDP) = DiscreteUpdater(problem)
 initialstate(::ConstObsPOMDP) = BoolDistribution(0.0)
-transition(p::ConstObsPOMDP, s::Bool, a::Symbol) = BoolDistribution(0.5)
+transition(p::ConstObsPOMDP, s::Bool, a::Symbol) = BoolDistribution(0.0)
 observation(p::ConstObsPOMDP, a::Symbol, sp::Bool) = BoolDistribution(1.0)
 reward(p::ConstObsPOMDP, s::Bool, a::Symbol, sp::Bool) = 1.
 discount(p::ConstObsPOMDP) = 0.9
@@ -50,10 +51,26 @@ end;
 
 @testset "belief dependent actions" begin
 	pomdp = ConstObsPOMDP()
-	function POMDPs.actions(m::ConstObsPOMDP, b::AOHistoryBelief)
+	function POMDPs.actions(m::ConstObsPOMDP, b::LeafNodeBelief)
 		@test currentobs(b) == true
         @test history(b)[end].o == true
         @test history(b)[end].a == :the_only_action
+        @test mean(b) == 0.0
+        @test mode(b) == 0.0
+        @test only(support(b)) == false
+        @test pdf(b, false) == 1.0
+        @test pdf(b, true) == 0.0
+        @test rand(b) == false
+        @test n_particles(b) == 1
+        @test only(particles(b)) == false
+        @test only(weights(b)) == 1.0
+        @test only(weighted_particles(b)) == (false => 1.0)
+        @test weight_sum(b) == 1.0
+        @test weight(b, 1) == 1.0 
+        @test particle(b, 1) == false
+
+        # old type name - this can be removed when upgrading versions
+        @test b isa AOHistoryBelief
         return actions(m)
 	end
 
