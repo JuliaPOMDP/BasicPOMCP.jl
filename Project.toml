@@ -1,7 +1,7 @@
 name = "BasicPOMCP"
 uuid = "d721219e-3fc6-5570-a8ef-e5402f47c49e"
 repo = "https://github.com/JuliaPOMDP/BasicPOMCP.jl"
-version = "0.3.5"
+version = "0.3.6"
 
 [deps]
 BeliefUpdaters = "8bb6e9a1-7d73-552c-a44a-e5dc5634aac4"
