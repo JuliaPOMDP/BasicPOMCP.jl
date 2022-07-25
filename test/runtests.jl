@@ -6,7 +6,7 @@ using NBInclude
 using D3Trees
 using Random
 using POMDPSimulators
-using POMDPModelTools
+using POMDPTools
 using POMDPTesting
 using POMDPLinter: @requirements_info, @show_requirements, requirements_info
 using ParticleFilters: n_particles, particles, particle, weights, weighted_particles, weight_sum, weight

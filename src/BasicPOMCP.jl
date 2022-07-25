@@ -22,7 +22,7 @@ using Printf
 using POMDPLinter: @POMDP_require, @show_requirements
 
 import POMDPs: action, solve, updater
-import POMDPModelTools: action_info, UnderlyingMDP
+import POMDPTools: action_info, UnderlyingMDP
 import POMDPLinter
 
 using MCTS
