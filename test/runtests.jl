@@ -5,9 +5,7 @@ using POMDPModels
 using NBInclude
 using D3Trees
 using Random
-using POMDPSimulators
-using POMDPModelTools
-using POMDPTesting
+using POMDPTools
 using POMDPLinter: @requirements_info, @show_requirements, requirements_info
 using ParticleFilters: n_particles, particles, particle, weights, weighted_particles, weight_sum, weight
 
@@ -33,7 +31,7 @@ states(p::ConstObsPOMDP) = (true, false)
 actions(p::ConstObsPOMDP) = (:the_only_action,)
 observations(p::ConstObsPOMDP) = (true, false)
 
-@testset "POMDPTesting" begin
+@testset "POMDPTools" begin
 	pomdp = BabyPOMDP()
 	test_solver(POMCPSolver(), BabyPOMDP())
 end;

@@ -108,7 +108,7 @@ The search tree can be visualized with [D3Trees.jl](https://github.com/sisl/D3Tr
 using POMDPs
 using BasicPOMCP
 using POMDPModels
-using POMDPModelTools
+using POMDPTools
 using D3Trees
 using Random
 
