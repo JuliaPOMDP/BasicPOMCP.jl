@@ -12,17 +12,14 @@ Current constraints:
 using POMDPs
 using Parameters
 using ParticleFilters
-using BeliefUpdaters
-using POMDPPolicies
-using POMDPSimulators
 using CPUTime
 using Colors
 using Random
 using Printf
 using POMDPLinter: @POMDP_require, @show_requirements
+using POMDPTools
 
 import POMDPs: action, solve, updater
-import POMDPModelTools: action_info, UnderlyingMDP
 import POMDPLinter
 
 using MCTS

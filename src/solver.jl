@@ -1,4 +1,4 @@
-function action_info(p::POMCPPlanner, b; tree_in_info=false)
+function POMDPTools.action_info(p::POMCPPlanner, b; tree_in_info=false)
     local a::actiontype(p.problem)
     info = Dict{Symbol, Any}()
     try
