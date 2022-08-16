@@ -1,6 +1,6 @@
 # BasicPOMCP
 
-[![CI](https://github.com/dylan-asmar/BasicPOMCP.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/dylan-asmar/BasicPOMCP.jl/actions/workflows/CI.yml)
+[![CI](https://github.com/JuliaPOMDP/BasicPOMCP.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaPOMDP/BasicPOMCP.jl/actions/workflows/CI.yml)
 [![codecov](https://codecov.io/gh/JuliaPOMDP/BasicPOMCP.jl/branch/master/graph/badge.svg?token=NdfHG2MJPY)](https://codecov.io/gh/JuliaPOMDP/BasicPOMCP.jl)
 
 This package implements the PO-UCT online tree search algorithm for [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl). PO-UCT is the most useful component of the POMCP algorithm described in \[1\]. The other component of POMCP, re-use of particles in the tree for belief updates, is not implemented for reasons described in the [Belief Update](#belief-update) section below.
