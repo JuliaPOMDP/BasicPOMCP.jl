@@ -1,8 +1,7 @@
 # BasicPOMCP
 
-[![Build Status](https://travis-ci.org/JuliaPOMDP/BasicPOMCP.jl.svg?branch=master)](https://travis-ci.org/JuliaPOMDP/BasicPOMCP.jl)
-[![Coverage Status](https://coveralls.io/repos/JuliaPOMDP/BasicPOMCP.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/JuliaPOMDP/BasicPOMCP.jl?branch=master)
-[![codecov.io](http://codecov.io/github/JuliaPOMDP/BasicPOMCP.jl/coverage.svg?branch=master)](http://codecov.io/github/JuliaPOMDP/BasicPOMCP.jl?branch=master)
+[![CI](https://github.com/JuliaPOMDP/BasicPOMCP.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaPOMDP/BasicPOMCP.jl/actions/workflows/CI.yml)
+[![codecov](https://codecov.io/gh/JuliaPOMDP/BasicPOMCP.jl/branch/master/graph/badge.svg?token=NdfHG2MJPY)](https://codecov.io/gh/JuliaPOMDP/BasicPOMCP.jl)
 
 This package implements the PO-UCT online tree search algorithm for [POMDPs.jl](https://github.com/JuliaPOMDP/POMDPs.jl). PO-UCT is the most useful component of the POMCP algorithm described in \[1\]. The other component of POMCP, re-use of particles in the tree for belief updates, is not implemented for reasons described in the [Belief Update](#belief-update) section below.
 
