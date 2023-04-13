@@ -61,7 +61,7 @@ function convert_estimator(ev::PORollout, solver, pomdp)
 end
 
 function convert_estimator(est::FORollout, solver, pomdp)
-    policy = MCTS.convert_to_policy(est.solver, pomdp)
+    policy = MCTS.convert_to_policy(est.solver, UnderlyingMDP(pomdp))
     SolvedFORollout(policy, solver.rng)
 end
 

@@ -172,3 +172,12 @@ end;
         """
     end
 end
+
+@testset "FORollout" begin
+    struct TestMDPSolver1 <: Solver end
+    POMDPs.solve(::TestMDPSolver1, m::MDP) = FunctionPolicy(s->first(actions(m)))
+    solver = POMCPSolver(estimate_value=FORollout(TestMDPSolver1()))
+    m = BabyPOMDP()
+    planner = solve(solver, m)
+    @test action(planner, initialstate(m)) in actions(m)
+end
