@@ -74,6 +74,7 @@ The output of `?POMCPSolver` is printed below, but may not be up to date.
 >     - If this is a function `f`, `f(pomdp, s, h::BeliefNode, steps)` will be called to estimate the value.
 >     - If this is an object `o`, `estimate_value(o, pomdp, s, h::BeliefNode, steps)` will be called.
 >     - If this is a number, the value will be set to that number
+>     
 >     Note: In many cases, the simplest way to estimate the value is to do a rollout on the fully observable MDP with a policy that is a function of the state. To do this, use `FORollout(policy)`.
 > 
 > - `default_action::Any`
