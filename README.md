@@ -68,13 +68,20 @@ The output of `?POMCPSolver` is printed below, but may not be up to date.
 >     Number of iterations during each action() call.
 >     default: `1000`
 > 
+> - `max_time::Float64`
+>     Maximum time for planning in each action() call.
+>     default: `Inf`
+> 
+> - `tree_in_info::Bool`
+>     If `true`, returns the tree in the info dict when action_info is called.
+>     default: `false`
+> 
 > - `estimate_value::Any`
 >     Function, object, or number used to estimate the value at the leaf nodes.
 >     default: `RolloutEstimator(RandomSolver(rng))`
 >     - If this is a function `f`, `f(pomdp, s, h::BeliefNode, steps)` will be called to estimate the value.
 >     - If this is an object `o`, `estimate_value(o, pomdp, s, h::BeliefNode, steps)` will be called.
 >     - If this is a number, the value will be set to that number
->     
 >     Note: In many cases, the simplest way to estimate the value is to do a rollout on the fully observable MDP with a policy that is a function of the state. To do this, use `FORollout(policy)`.
 > 
 > - `default_action::Any`
@@ -86,8 +93,7 @@ The output of `?POMCPSolver` is printed below, but may not be up to date.
 > 
 > - `rng::AbstractRNG`
 >     Random number generator.
->     default: `Base.GLOBAL_RNG`
-
+>     default: `Random.GLOBAL_RNG`
 
 
 ## Belief Update
