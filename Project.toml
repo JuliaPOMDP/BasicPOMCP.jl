@@ -1,7 +1,7 @@
 name = "BasicPOMCP"
 uuid = "d721219e-3fc6-5570-a8ef-e5402f47c49e"
 repo = "https://github.com/JuliaPOMDP/BasicPOMCP.jl"
-version = "0.3.9"
+version = "0.3.10"
 
 [deps]
 CPUTime = "a9c8d775-2e2e-55fc-8582-045d282d599e"
