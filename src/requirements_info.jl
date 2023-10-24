@@ -12,7 +12,7 @@ function POMDPLinter.requirements_info(solver::AbstractPOMCPSolver, problem::POM
     requirements_info(policy, b)
 end
 
-POMDPs.requirements_info(policy::POMCPPlanner, b) = @show_requirements action(policy, b)
+POMDPLinter.requirements_info(policy::POMCPPlanner, b) = @show_requirements action(policy, b)
 
 @POMDP_require action(p::POMCPPlanner, b) begin
     tree = POMCPTree(p.problem, b, p.solver.tree_queries)
