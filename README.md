@@ -15,13 +15,8 @@ This package replaces the deprecated [POMCP.jl package](https://github.com/Julia
 
 ## Installation
 
-In Julia 1.0 and higher, BasicPOMCP is available on the JuliaPOMDP registry (and this registry is required to automatically get the MCTS dependency):
-
 ```julia
 using Pkg
-Pkg.add("POMDPs")
-using POMDPs
-POMDPs.add_registry()
 Pkg.add("BasicPOMCP")
 ```
 
