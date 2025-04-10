@@ -20,20 +20,22 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 CPUTime = "1"
 Colors = "0.9, 0.10, 0.11, 0.12, 0.13"
 D3Trees = "0.3"
+Distributions = "0.21, 0.22, 0.23, 0.24, 0.25"
 MCTS = "0.4, 0.5"
+NBInclude = "2"
 POMDPLinter = "0.1"
+POMDPModels = "0.4"
 POMDPTools = "0.1, 1"
 POMDPs = "0.9, 1"
 Parameters = "0.12"
-ParticleFilters = "0.5"
+ParticleFilters = "0.5, 0.6"
 julia = "1.1"
 
 [extras]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 NBInclude = "0db19996-df87-5ea3-a455-e3a50d440464"
 POMDPModels = "355abbd5-f08e-5560-ac9e-8b5f2592a0ca"
-POMDPTesting = "92e6a534-49c2-5324-9027-86e3c861ab81"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["POMDPModels", "POMDPTesting", "NBInclude", "Test", "Distributions"]
+test = ["POMDPModels", "NBInclude", "Test", "Distributions"]
