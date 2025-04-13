@@ -12,7 +12,6 @@ Current constraints:
 using POMDPs
 using Parameters
 using ParticleFilters
-using CPUTime
 using Colors
 using Random
 using Printf
@@ -101,6 +100,10 @@ Partially Observable Monte Carlo Planning Solver.
     - If this is a Policy `p`, `action(p, belief)` will be called.
     - If it is an object `a`, `default_action(a, pomdp, belief, ex)` will be called, and if this method is not implemented, `a` will be returned directly.
 
+- `time::Function`
+    Function to call to get the time in seconds. This is used to check if the maximum time has been reached.
+    default: `() -> time_ns()*1e-9`
+
 - `rng::AbstractRNG`
     Random number generator.
     default: `Random.GLOBAL_RNG`
@@ -114,6 +117,7 @@ Partially Observable Monte Carlo Planning Solver.
     default_action::Any     = ExceptionRethrow()
     rng::AbstractRNG        = Random.GLOBAL_RNG
     estimate_value::Any     = RolloutEstimator(RandomSolver(rng))
+    time::Function          = ()->time_ns()*1e-9
 end
 
 struct POMCPTree{A,O}
@@ -204,10 +208,11 @@ struct POMCPObsNode{A,O} <: BeliefNode
     node::Int
 end
 
-mutable struct POMCPPlanner{P, SE, RNG} <: Policy
+mutable struct POMCPPlanner{P, SE, T, RNG} <: Policy
     solver::POMCPSolver
     problem::P
     solved_estimator::SE
+    time::T
     rng::RNG
     _best_node_mem::Vector{Int}
     _tree::Union{Nothing, Any}
@@ -215,7 +220,7 @@ end
 
 function POMCPPlanner(solver::POMCPSolver, pomdp::POMDP)
     se = convert_estimator(solver.estimate_value, solver, pomdp)
-    return POMCPPlanner(solver, pomdp, se, solver.rng, Int[], nothing)
+    return POMCPPlanner(solver, pomdp, se, solver.time, solver.rng, Int[], nothing)
 end
 
 Random.seed!(p::POMCPPlanner, seed) = Random.seed!(p.rng, seed)

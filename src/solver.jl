@@ -21,10 +21,10 @@ action(p::POMCPPlanner, b) = first(action_info(p, b))
 function search(p::POMCPPlanner, b, t::POMCPTree, info::Dict)
     all_terminal = true
     nquery = 0
-    start_us = CPUtime_us()
+    start = p.time()
     for i in 1:p.solver.tree_queries
         nquery += 1
-        if CPUtime_us() - start_us >= 1e6*p.solver.max_time
+        if p.time() - start >= p.solver.max_time
             break
         end
         s = rand(p.rng, b)
@@ -33,8 +33,11 @@ function search(p::POMCPPlanner, b, t::POMCPTree, info::Dict)
             all_terminal = false
         end
     end
-    info[:search_time_us] = CPUtime_us() - start_us
     info[:tree_queries] = nquery
+    info[:tree_time] = p.time() - start
+
+    # for backwards compat
+    info[:search_time_us] = info[:tree_time] * 1e6
 
     if all_terminal
         throw(AllSamplesTerminal(b))
