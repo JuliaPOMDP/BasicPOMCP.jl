@@ -9,6 +9,8 @@ using POMDPTools
 using POMDPLinter: @requirements_info, @show_requirements, requirements_info
 using ParticleFilters: n_particles, particles, particle, weights, weighted_particles, weight_sum, weight
 
+@info("Loaded Packages!")
+
 import POMDPs:
 	transition,
 	observation,
@@ -31,10 +33,18 @@ states(p::ConstObsPOMDP) = (true, false)
 actions(p::ConstObsPOMDP) = (:the_only_action,)
 observations(p::ConstObsPOMDP) = (true, false)
 
-@testset "POMDPTools" begin
-	pomdp = BabyPOMDP()
-	test_solver(POMCPSolver(), BabyPOMDP())
+@info("Created ConstObsPOMDP!")
+
+@testset verbose=true "POMDPTools" begin
+	@show pomdp = BabyPOMDP()
+    @show sol = POMCPSolver()
+    @show planner = solve(sol, pomdp)
+    @show b = initialstate(pomdp)
+    @show action(planner, b)
+	test_solver(sol, pomdp)
 end;
+
+@info("Finished POMDPTools tests!")
 
 @testset "type stability" begin
 	pomdp = BabyPOMDP()
