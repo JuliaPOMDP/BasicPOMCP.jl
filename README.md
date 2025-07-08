@@ -23,7 +23,7 @@ Pkg.add("BasicPOMCP")
 ## Usage
 
 ```julia
-using POMDPs, POMDPModels, POMDPSimulators, BasicPOMCP
+using POMDPs, POMDPModels, POMDPTools, BasicPOMCP
 
 pomdp = TigerPOMDP()
 
